@@ -14,6 +14,10 @@ public class ProfesorServices {
   private ProfesorRepository repository;
   
   public List<Profesor> getAllProfesores () {
-    return repository.getAllProfesores();
+    return repository.getAll();
   }    
+
+  public void addProfesor(Profesor profesor) {
+    repository.create(profesor);
+  }
 }

@@ -15,5 +15,28 @@
       <p th:text="${profesor.email}"></p> 
     </li>
   </ul>
+
+  <button>Añadir profesor</button>
+  <script>
+    const button = document.querySelector('button')
+    button.addEventListener('click', () => {
+      fetch('/profesores', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',  // ¡IMPORTANTE!
+        },
+        body: JSON.stringify({
+          nombre: 'Ignacio', 
+          apellidos: 'Perez Mornay', 
+          email: 'ignacio@gmail.com', 
+          asignatura: 'lengua'
+        })
+      }).then(res => {
+        if(res.ok) {
+          window.location.href = window.location.pathname;
+        }
+      })
+    })
+  </script>
 </body>
 </html>
