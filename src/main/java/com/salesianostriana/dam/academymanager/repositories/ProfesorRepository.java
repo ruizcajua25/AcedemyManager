@@ -5,17 +5,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.salesianostriana.dam.academymanager.modules.Asignatura;
 import com.salesianostriana.dam.academymanager.modules.Profesor;
 
 @Repository
 public class ProfesorRepository {
   // TODO: esto esta falseado
 
-  private List<Profesor> profesores = new ArrayList<Profesor>(List.of(
-    new Profesor("Juan", "Ruiz", "lkasakdsf@gmail.com", "matemáticas"),
-    new Profesor("Juan", "Ruiz", "lkasakdsf@gmail.com", "matemáticas"),
-    new Profesor("Juan", "Ruiz", "lkasakdsf@gmail.com", "matemáticas")
-  ));
+  private List<Profesor> profesores = new ArrayList<Profesor>(
+    new Profesor("lkfadjsdfj@gmail.com", "Juan", "Ruiz", null, null)
+  );
 
   public List<Profesor> getAll () {
     return profesores; 
