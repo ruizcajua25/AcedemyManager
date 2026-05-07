@@ -12,9 +12,9 @@ import com.salesianostriana.dam.academymanager.modules.Profesor;
 public class ProfesorRepository {
   // TODO: esto esta falseado
 
-  private List<Profesor> profesores = new ArrayList<Profesor>(
-    new Profesor("lkfadjsdfj@gmail.com", "Juan", "Ruiz", null, null)
-  );
+  private List<Profesor> profesores = new ArrayList<Profesor>(List.of(
+    Profesor.builder().nombre("juan").apellidos("ruiz").email("kafldkfalfdla@gmail.com").build()
+  ));
 
   public List<Profesor> getAll () {
     return profesores; 
