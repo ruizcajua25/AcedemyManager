@@ -1,6 +1,5 @@
 package com.salesianostriana.dam.academymanager.modules;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
