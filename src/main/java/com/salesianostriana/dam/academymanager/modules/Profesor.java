@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 public class Profesor {
 
   @Id @GeneratedValue
+  private long id;
   private String email;
   private String nombre;
   private String apellidos;
