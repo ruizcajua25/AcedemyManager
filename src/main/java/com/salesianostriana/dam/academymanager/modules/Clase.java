@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.academymanager.modules;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +32,7 @@ public class Clase {
     joinColumns = @JoinColumn(name = "clase_id"),
     inverseJoinColumns = @JoinColumn(name = "asignatura_id")
   )
-  private List<Asignatura> asignaturas;
+  private Set<Asignatura> asignaturas;
 
   @ManyToMany
   @JoinTable(
@@ -40,5 +40,5 @@ public class Clase {
     joinColumns = @JoinColumn(name = "clase_id"),
     inverseJoinColumns = @JoinColumn(name = "alumno_dni")
   )
-  private List<Alumno> alumnos;
+  private Set<Alumno> alumnos;
 }

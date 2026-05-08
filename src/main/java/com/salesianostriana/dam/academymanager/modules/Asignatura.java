@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.academymanager.modules;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,5 +26,5 @@ public class Asignatura {
   private String nombre;
 
   @OneToMany(mappedBy = "asignatura")
-  private List<Profesor> profesores;
+  private Set<Profesor> profesores;
 }
