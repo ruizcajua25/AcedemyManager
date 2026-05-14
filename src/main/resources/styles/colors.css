@@ -1,0 +1,28 @@
+:root { 
+  --brand-color-light: #6FCF97;
+  --brand-color: #2FA084;
+  --brand-color-dark: #1F6F5F;
+}
+
+.bg-brand-light {
+  background-color: var(--brand-color-light) !important;
+}
+.text-brand-light {
+  color: var(--brand-color-light) !important;
+}
+
+
+.text-brand {
+  color: var(--brand-color) !important;
+}
+.bg-brand {
+  background-color: var(--brand-color) !important;
+}
+
+
+.text-brand-dark {
+  color: var(--brand-color-dark) !important;
+}
+.bg-brand-dark {
+  background-color: var(--brand-color-dark) !important;
+}
