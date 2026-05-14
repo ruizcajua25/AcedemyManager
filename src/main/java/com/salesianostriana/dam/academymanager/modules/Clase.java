@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Clase {
 
   @Id @GeneratedValue
-  private String id;
+  private long id;
   private String nombre;
 
   @ManyToMany

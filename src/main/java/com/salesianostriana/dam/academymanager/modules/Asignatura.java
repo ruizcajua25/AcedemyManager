@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class Asignatura {
 
   @Id @GeneratedValue
-  private String id;
+  private long id;
   private String nombre;
 
   @OneToMany(mappedBy = "asignatura")

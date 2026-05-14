@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 public class Alumno {
 
   @Id @GeneratedValue
+  private long id;
   private String dni;
   private String nombre;
   private String apellidos;
