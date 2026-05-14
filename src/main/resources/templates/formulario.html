@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>formulario</title>
+</head>
+<body>
+  <form action="#" th:action="@{/profesores}" th:object="${profesor}" method="POST">
+    <label for="nombre">
+      Nombre
+      <input type="text" id="nombre" th:field="*{nombre}" name="nombre">
+    </label>
+    <label for="apellidos">
+      Apellidos
+      <input type="text" id="apellidos" th:field="*{apellidos}" name="apellidos">
+    </label>
+    <label for="email">
+      Email
+      <input type="email" id="email" th:field="*{email}" name="email">
+    </label>
+    <button type="submit">subir</button>
+  </form>
+</body>
+</html>

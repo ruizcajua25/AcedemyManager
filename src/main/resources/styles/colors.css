@@ -10,6 +10,9 @@
 .text-brand-light {
   color: var(--brand-color-light) !important;
 }
+.border-brand-light {
+  border-color: var(--brand-color-light) !important;
+}
 
 
 .text-brand {
