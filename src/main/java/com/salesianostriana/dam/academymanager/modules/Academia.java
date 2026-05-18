@@ -5,6 +5,7 @@ import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,7 @@ public class Academia {
 
   @OneToMany(mappedBy = "academia")
   private Set<Alumno> alumnos;
+
+  @ManyToMany(mappedBy = "directores")
+  private Set<Director> directores;
 }
