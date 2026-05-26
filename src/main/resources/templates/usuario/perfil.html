@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Mi Perfil</title>
+</head>
+<body>
+  <section class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
+    <header class="d-flex justify-content-between align-items-start">
+      <h1 class="mb-4">
+        <span th:text="${usuario.nombre}"></span>
+        <span th:text="${usuario.apellidos}"></span>
+      </h1>
+      <a href="/academia/crear" class="btn btn-light">Crear una academia</a>
+    </header>
+    <ul class="list-unstyled">
+      <li th:text="${usuario.email}"></li>
+    </ul>
+    </section>
+</body>
+</html>
