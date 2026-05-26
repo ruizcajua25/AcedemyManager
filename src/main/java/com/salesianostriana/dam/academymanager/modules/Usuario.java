@@ -1,5 +1,10 @@
 package com.salesianostriana.dam.academymanager.modules;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Usuario {
+public class Usuario implements UserDetails {
   @Id @GeneratedValue
   private String id;
   private String dni;
@@ -23,5 +28,10 @@ public class Usuario {
   private String apellidos;
   private String username;
   private String password;
-  private String email;    
+  private String email;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+  }    
 }
