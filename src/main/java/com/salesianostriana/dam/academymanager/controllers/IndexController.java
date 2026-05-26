@@ -4,7 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.salesianostriana.dam.academymanager.modules.Profesor;
+import com.salesianostriana.dam.academymanager.modules.Usuario;
+
 
 
 @Controller
@@ -15,9 +16,10 @@ public class IndexController {
     return "index.html";
   }
 
-  @GetMapping("/formulario")
-  public String formulario(Model model) {
-    model.addAttribute("profesor", new Profesor());
-    return "formulario";
+
+  @GetMapping("/login")
+  public String login(Model model) {
+    model.addAttribute("usuario", new Usuario());
+    return "login";
   }
 }
