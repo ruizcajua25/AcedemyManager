@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.academymanager.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,8 @@ public class IndexController {
   private PasswordEncoder passwordEncoder;
 
   @GetMapping("/")
-  public String index () {
+  public String index (@AuthenticationPrincipal Usuario usuario, Model model) {
+    model.addAttribute("usuario", usuario);
     return "index.html";
   }
 

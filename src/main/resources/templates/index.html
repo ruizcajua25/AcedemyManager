@@ -10,8 +10,15 @@
 <body class="min-vh-100 d-flex flex-column bg-brand-dark text-white">
   <header class="container-fluid fixed-top">
     <nav class="navbar gap-4 p-4 d-flex justify-content-center">
-      <a class="nav-link" href="/login">Iniciar sesión</a>
-      <a class="nav-link" href="/login">Iniciar sesión</a>
+      <div class="d-flex gap-5" th:unless="${usuario}">
+        <a class="nav-link" href="/login">Iniciar sesión</a>
+        <a class="nav-link" href="/registro">Registrarse</a>
+      </div>
+      <div class="d-flex gap-4" th:if="${usuario}">
+        <form action="#" th:action="@{/logout}" method="post">
+          <button class="nav-link" type="submit">Cerrar sesión</button>
+        </form>
+      </div>
     </nav>
   </header>
   <section class="row flex-grow-1 m-0">
@@ -32,6 +39,5 @@
       <img class="rounded h-75 col-10 object-fit-cover" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj14iSKLat_v3o4xRs9kv41noZTkDQG9t7rgkMYpA1ETb_sap7NytMarHt-i2SBRnuzme3khS2qyzVZL3BNaTocWB_KiWwn_Az1v1M1SgbuKbkwioPLGVkOu3z5AI9OxEV6QhOT_gnLKkY/s1600/Parlamento+de+Austria.jpg" alt="Foto de una academia">
     </article>
   </section>
-
 </body>
 </html>
