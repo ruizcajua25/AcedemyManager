@@ -9,5 +9,5 @@ import com.salesianostriana.dam.academymanager.modules.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-  Optional<Usuario> findByNombre(String nombre);
+  Optional<Usuario> findByUsername(String username);
 } 
