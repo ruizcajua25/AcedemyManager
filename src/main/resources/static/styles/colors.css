@@ -1,7 +1,12 @@
 :root { 
+  --brand-color-extralight: rgb(211, 247, 237);
   --brand-color-light: #6FCF97;
   --brand-color: #2FA084;
   --brand-color-dark: #1F6F5F;
+}
+
+.bg-brand-extralight {
+  background-color: var(--brand-color-extralight) !important;
 }
 
 .bg-brand-light {
