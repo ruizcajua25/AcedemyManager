@@ -8,7 +8,7 @@
   <title>Mi Perfil</title>
 </head>
 <body>
-  <section class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
+  <section th:if="${usuario}" class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
     <header class="d-flex justify-content-between align-items-start">
       <h1 class="mb-4">
         <span th:text="${usuario.nombre}"></span>
@@ -19,6 +19,9 @@
     <ul class="list-unstyled">
       <li th:text="${usuario.email}"></li>
     </ul>
-    </section>
+  </section>
+  <section th:unless="${usuario}">
+    <p>Usuario no encontrado.</p>
+  </section>
 </body>
 </html>
