@@ -10,7 +10,7 @@
 <body style="height: 100vh; display: grid; place-content: center;">
   <div class="container-sm border p-4 rounded" style="max-width: 40rem;">
     <h1 class="text-center mb-5 text-brand display-2">Crea tu academia</h1>
-    <form class="d-flex flex-column gap-4" action="#" >
+    <form class="d-flex flex-column gap-4" action="#" th:action="@{/academia/create}" th:object="${academia}" method="post">
       <div>
       <label class="form-label" for="nombre">Nombre de la academia:</label>
       <input class="form-control" type="text" id="nombre" name="nombre">
@@ -23,6 +23,11 @@
         <label class="form-label" for="telefono">Teléfono:</label>
         <input class="form-control" type="text" id="telefono" name="telefono">
       </div>
+      <div>
+        <label class="form-label" for="email">Correo electrónico:</label>
+        <input class="form-control" type="email" id="email" name="email">
+      </div>
+      <button class="btn bg-brand text-white" type="submit">Crear academia</button>
     </form>
   </div>
 </body>
