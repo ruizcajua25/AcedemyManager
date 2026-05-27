@@ -22,7 +22,7 @@ import lombok.ToString;
 public class Academia {
   @Id 
   @GeneratedValue
-  private long id;
+  private String id;
   private String nombre;
   private String direccion;
   private String telefono;

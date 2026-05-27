@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Usuario implements UserDetails {
   @Id @GeneratedValue
-  private Long id;
+  private String id;
   private String dni;
   private String nombre;
   private String apellidos;

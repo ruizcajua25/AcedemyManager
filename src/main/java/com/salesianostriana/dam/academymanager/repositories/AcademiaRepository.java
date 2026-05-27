@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 
 @Repository
-public interface AcademiaRepository extends JpaRepository<Academia, Long> {
+public interface AcademiaRepository extends JpaRepository<Academia, String> {
     
 }

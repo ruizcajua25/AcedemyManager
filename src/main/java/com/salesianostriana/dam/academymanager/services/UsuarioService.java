@@ -10,7 +10,7 @@ import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.repositories.UsuarioRepository;
 
 @Service
-public class UsuarioService extends BaseService<Usuario, Long, UsuarioRepository> implements UserDetailsService {
+public class UsuarioService extends BaseService<Usuario, String, UsuarioRepository> implements UserDetailsService {
   @Autowired
   private UsuarioRepository usuarioRepository;
 
