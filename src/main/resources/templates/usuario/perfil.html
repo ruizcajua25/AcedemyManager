@@ -22,20 +22,20 @@
     <article class="mt-5">
       <h1>Mis Academias</h1>
       <ul class="list-unstyled">
-        <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}" class="mb-2">
-          <li>
+        <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}">
+          <li class="ms-3">
             <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
             <span style="opacity: 0.5;">Director</span>
           </li>
         </div>
-        <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}" class="mb-2">
-          <li>
+        <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}">
+          <li class="ms-3">
             <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
             <span style="opacity: 0.5;">Alumno</span>
           </li>
         </div>
-        <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}" class="mb-2">
-          <li>
+        <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}">
+          <li class="ms-3">
             <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
             <span style="opacity: 0.5;">Profesor</span>
           </li>
