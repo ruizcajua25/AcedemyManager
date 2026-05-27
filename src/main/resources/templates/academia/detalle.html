@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lista de academias</title>
+  <title th:text="${academia.nombre}">Academia</title>
 </head>
 <body>
-  <ul>
-    <a th:each="academia : ${academias}" th:href="@{/academias/{id}(id=${academia.id})}">
-      <li th:text="${academia.nombre}"></li>
-    </a>
-  </ul>
+  <h1 th:text="${academia.nombre}">Nombre de la academia</h1>
 </body>
 </html>
