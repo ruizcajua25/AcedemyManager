@@ -19,6 +19,29 @@
     <ul class="list-unstyled">
       <li th:text="${usuario.email}"></li>
     </ul>
+    <article class="mt-5">
+      <h1>Mis Academias</h1>
+      <ul class="list-unstyled">
+        <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}" class="mb-2">
+          <li>
+            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
+            <span style="opacity: 0.5;">Director</span>
+          </li>
+        </div>
+        <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}" class="mb-2">
+          <li>
+            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
+            <span style="opacity: 0.5;">Alumno</span>
+          </li>
+        </div>
+        <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}" class="mb-2">
+          <li>
+            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
+            <span style="opacity: 0.5;">Profesor</span>
+          </li>
+        </div>
+      </ul>
+    </article>
   </section>
   <section th:unless="${usuario}">
     <p>Usuario no encontrado.</p>

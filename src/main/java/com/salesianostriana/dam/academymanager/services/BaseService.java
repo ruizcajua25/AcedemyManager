@@ -2,6 +2,7 @@ package com.salesianostriana.dam.academymanager.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,6 +40,10 @@ public class BaseService<T, ID, R extends JpaRepository<T, ID>> implements IBase
   @Override
   public void deleteById(ID id) {
     repository.deleteById(id);
+  }
+
+  public List<T> findAllByPredicate(Predicate<T> predicate) {
+    return repository.findAll().stream().filter(predicate).toList();
   }
     
 }
