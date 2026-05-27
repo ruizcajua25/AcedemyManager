@@ -45,11 +45,12 @@ public class AcademiaController {
       .build();
 
     directorService.save(director);
-    return "redirect:/academias";
+    return "redirect:/perfil";
   }
 
-  @GetMapping("/academias")
+  @GetMapping("/academias/find")
   public String formulario(Model model) {
-    return "academia/index";
+    model.addAttribute("academias", academiaService.findAll());
+    return "academia/find";
   }
 }
