@@ -15,6 +15,7 @@ import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.DirectorService;
+import com.salesianostriana.dam.academymanager.services.OfertaService;
 
 
 @Controller
@@ -23,6 +24,10 @@ public class AcademiaController {
   private AcademiaService academiaService;
   @Autowired
   private DirectorService directorService;
+  @Autowired
+  private OfertaService ofertaService; 
+
+
 
   @GetMapping("/academia/create")
   public String index (Model model) { 
@@ -56,9 +61,12 @@ public class AcademiaController {
   }
 
   @GetMapping("/academias/{id}")
-  public String detalle(@PathVariable("id") String id, Model model) {
-    Academia a = academiaService.findById(id).orElseThrow();
-    model.addAttribute("academia", a);
+  public String detalle(@PathVariable("id") String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Academia academia = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontró la academia con ID: " + id));
+    boolean isDirector = academia.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
+    model.addAttribute("director", isDirector);
+    model.addAttribute("academia", academia);
+    model.addAttribute("ofertas", ofertaService.findByAcademia(academia));
     return "academia/detalle";
   }
 }
