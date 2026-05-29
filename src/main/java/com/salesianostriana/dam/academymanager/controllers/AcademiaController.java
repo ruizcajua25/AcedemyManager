@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.salesianostriana.dam.academymanager.modules.Academia;
@@ -45,11 +46,19 @@ public class AcademiaController {
       .build();
 
     directorService.save(director);
-    return "redirect:/academias";
+    return "redirect:/perfil";
   }
 
-  @GetMapping("/academias")
+  @GetMapping("/academias/find")
   public String formulario(Model model) {
-    return "academia/index";
+    model.addAttribute("academias", academiaService.findAll());
+    return "academia/find";
+  }
+
+  @GetMapping("/academias/{id}")
+  public String detalle(@PathVariable("id") String id, Model model) {
+    Academia a = academiaService.findById(id).orElseThrow();
+    model.addAttribute("academia", a);
+    return "academia/detalle";
   }
 }
