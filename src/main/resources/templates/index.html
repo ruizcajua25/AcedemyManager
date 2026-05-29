@@ -7,10 +7,8 @@
   <link rel="stylesheet" href="/styles/colors.css">
   <title>Academy Manager</title>
 </head>
-<body class="min-vh-100 d-flex flex-column bg-brand-dark text-white">
-  <header class="container-fluid fixed-top">
-    <div th:replace="fragments/navbar :: navbar"></div>
-  </header>
+<body class="min-vh-100 d-flex flex-column bg-brand-dark text-white">  
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
   <section class="row flex-grow-1 m-0">
     <article class="col-6 d-flex flex-column justify-content-center align-items-center">
       <div class="col-10 ps-5">

@@ -8,6 +8,9 @@
   <title>Mi Perfil</title>
 </head>
 <body>
+  <div class="border-bottom">
+    <div th:replace="~{fragments/navbar :: navbar-black-nofixed}"></div>
+  </div>
   <section th:if="${usuario}" class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
     <header class="d-flex justify-content-between align-items-start">
       <h1 class="mb-4">

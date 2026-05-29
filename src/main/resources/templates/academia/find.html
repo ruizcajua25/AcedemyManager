@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
+   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
   <title>Lista de academias</title>
-  <script type="module">
+  <style>
+    #academia:nth-child(odd) li{
+      background-color: var(--brand-color-extralight);
+    }
+    #academia:nth-child(even) li{
+      background-color: var(--brand-color-light);
+    }
+  </style>
+  <script defer>
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', () => {
       const filter = searchInput.value.toLowerCase();
@@ -21,11 +31,12 @@
     })
   </script>
 </head>
-<body>
+<body class="bg-brand">
+  <div th:replace="~{fragments/navbar :: navbar-nofixed}"></div>
   <main class="container mt-5 d-flex justify-content-center w-100 h-100 flex-column align-items-center">
     <input class="w-100 mb-3 py-2 px-3 rounded" style="font-size: 1.1rem;" type="text" placeholder="Buscar academia..." id="searchInput">
     <ul class="list-unstyled w-100 d-block">
-      <a class="text-decoration-none text-black" th:each="academia : ${academias}" th:href="@{/academias/{id}(id=${academia.id})}">
+      <a id="academia" class="text-decoration-none text-black" th:each="academia : ${academias}" th:href="@{/academias/{id}(id=${academia.id})}">
         <li class="d-grid border p-2 text-nowrap" style="grid-template-columns: 40% 1fr;">
           <h1 class="text-truncate" th:text="${academia.nombre}">Academia sin nombre</h1>
           <ul class="list-unstyled d-flex justify-content-around">
