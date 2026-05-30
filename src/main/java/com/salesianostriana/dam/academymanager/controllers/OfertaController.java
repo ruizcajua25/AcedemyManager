@@ -1,18 +1,21 @@
 package com.salesianostriana.dam.academymanager.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesianostriana.dam.academymanager.modules.Oferta;
+import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
 
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 
 
@@ -38,8 +41,40 @@ public class OfertaController {
   }
 
   @GetMapping("/ofertas/{id}")
-  public String detallesOferta(@PathVariable String id, Model model) {
-    model.addAttribute("oferta", ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada")));
+  public String detallesOferta(@PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    boolean editable = oferta.getAcademia().getDirectores().stream().anyMatch(d -> d.getId().getUsuarioId().equals(usuario.getId()));
+    model.addAttribute("oferta", oferta);
+    model.addAttribute("editable", editable);
     return "ofertas/detalle";
   }  
+
+  @GetMapping("/ofertas/editar")
+  public String formularioEditarOferta(@RequestParam String id, Model model) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    model.addAttribute("oferta", oferta);
+    return "ofertas/editar";
+  }
+
+  @PostMapping("/ofertas/editar")
+  public String editarOferta(@ModelAttribute("oferta") Oferta oferta, @RequestParam String id) {
+    Oferta ofertaOriginal = ofertaService.findById(id)
+      .orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+
+    ofertaOriginal.setTitulo(oferta.getTitulo());
+    ofertaOriginal.setDescripcion(oferta.getDescripcion());
+    ofertaOriginal.setTipoOferta(oferta.getTipoOferta());
+
+    ofertaService.save(ofertaOriginal);
+    return "redirect:/ofertas/" + id;
+  }
+
+  @PostMapping("/ofertas/borrar")
+  public String borrarOferta(@RequestParam String id) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    ofertaService.delete(oferta);
+    return "redirect:/academias/" + oferta.getAcademia().getId();
+  }
+  
+  
 }
