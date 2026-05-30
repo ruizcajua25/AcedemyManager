@@ -22,8 +22,7 @@ public class IndexController {
   private PasswordEncoder passwordEncoder;
 
   @GetMapping("/")
-  public String index (@AuthenticationPrincipal Usuario usuario, Model model) {
-    model.addAttribute("usuario", usuario);
+  public String index (Model model) {
     return "index.html";
   }
 
