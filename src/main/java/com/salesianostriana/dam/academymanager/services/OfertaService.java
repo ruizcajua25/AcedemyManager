@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Oferta;
+import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.repositories.OfertaRepository;
 
 @Service
@@ -16,5 +17,9 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
   
   public List<Oferta> findByAcademia (Academia academia) {
     return ofertaService.findByAcademia(academia); 
+  }
+
+  public void aplicar(Oferta oferta, Usuario usuario) {
+    oferta.getCandidatos().add(usuario);
   }
 }

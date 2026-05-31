@@ -1,8 +1,12 @@
 package com.salesianostriana.dam.academymanager.modules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,4 +30,7 @@ public class Oferta {
   private TipoOferta tipoOferta;
   private String titulo;
   private String descripcion;
+  @ManyToMany
+  @Builder.Default
+  private List<Usuario> candidatos = new ArrayList<>();
 }

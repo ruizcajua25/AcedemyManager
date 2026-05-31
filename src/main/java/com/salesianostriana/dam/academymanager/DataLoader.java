@@ -7,12 +7,15 @@ import org.springframework.stereotype.Component;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
 import com.salesianostriana.dam.academymanager.modules.Director;
+import com.salesianostriana.dam.academymanager.modules.Oferta;
 import com.salesianostriana.dam.academymanager.modules.Profesor;
+import com.salesianostriana.dam.academymanager.modules.TipoOferta;
 import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.AlumnoService;
 import com.salesianostriana.dam.academymanager.services.DirectorService;
+import com.salesianostriana.dam.academymanager.services.OfertaService;
 import com.salesianostriana.dam.academymanager.services.ProfesorService;
 import com.salesianostriana.dam.academymanager.services.UsuarioService;
 
@@ -28,6 +31,7 @@ public class DataLoader implements CommandLineRunner {
   private final AlumnoService alumnoService;
   private final ProfesorService profesorService;
   private final PasswordEncoder passwordEncoder;
+  private final OfertaService ofertaService;
 
   @Override
   public void run(String... args) {
@@ -116,6 +120,13 @@ public class DataLoader implements CommandLineRunner {
       .id(tipoUsuarioId(profesorUsuario, academiaTriana))
       .usuario(profesorUsuario)
       .academia(academiaTriana)
+      .build());
+
+    ofertaService.save(Oferta.builder()
+      .academia(academiaTriana)
+      .tipoOferta(TipoOferta.profesor)
+      .titulo("Profesor de FP de Informática")
+      .descripcion("Buscamos un profesor para impartir clases de informática en nuestro centro. Se valorará experiencia previa y titulación relacionada.")
       .build());
   }
 

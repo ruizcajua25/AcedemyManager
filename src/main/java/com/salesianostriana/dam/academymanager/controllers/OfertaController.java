@@ -46,6 +46,7 @@ public class OfertaController {
     boolean editable = oferta.getAcademia().getDirectores().stream().anyMatch(d -> d.getId().getUsuarioId().equals(usuario.getId()));
     model.addAttribute("oferta", oferta);
     model.addAttribute("editable", editable);
+    model.addAttribute("aplicado", oferta.getCandidatos().stream().anyMatch(c -> c.getId().equals(usuario.getId())));
     return "ofertas/detalle";
   }  
 
@@ -75,6 +76,12 @@ public class OfertaController {
     ofertaService.delete(oferta);
     return "redirect:/academias/" + oferta.getAcademia().getId();
   }
-  
-  
+
+  @PostMapping("/ofertas/aplicar")
+  public String aplicarOferta(@RequestParam String id, @AuthenticationPrincipal Usuario usuario) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    ofertaService.aplicar(oferta, usuario);
+    ofertaService.save(oferta);
+    return "redirect:/academias/" + oferta.getAcademia().getId();
+  }
 }

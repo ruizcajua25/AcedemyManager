@@ -13,8 +13,8 @@
     <div class="mb-5">
       <div class="d-flex justify-content-between">
         <h1 class="mb-2" style="line-height: 1rem;" th:text="${oferta.titulo}">Titulo de la oferta</h1>
-        <div>
-          <a th:if="${editable}" class="btn btn-outline-success border-brand-light text-white" th:href="@{/ofertas/editar(id=${oferta.id})}">Editar</a>
+        <div th:if="${editable}">
+          <a class="btn btn-outline-success border-brand-light text-white" th:href="@{/ofertas/editar(id=${oferta.id})}">Editar</a>
           <form action="" method="post" th:action="@{/ofertas/borrar(id=${oferta.id})}" style="display:inline;">
             <button id="boton-borrar" type="submit" class="btn btn-outline-danger border-danger text-white">Borrar</button>
           </form>
@@ -22,6 +22,10 @@
       </div>
       <a class="text-white  d-block opacity-50" th:href="@{/academias/{id}(id=${oferta.academia.id})}" th:text="${oferta.academia.nombre}">Academia</a>
       <span th:text="${oferta.tipoOferta}" class="badge bg-brand text-capitalize">Oferta</span>
+      <form th:if="${!aplicado && !editable}" action="#" method="post" th:action="@{/ofertas/aplicar(id=${oferta.id})}" class="mt-3">
+        <button type="submit" class="btn btn-outline-primary border-brand-light text-white">Aplicar</button>
+      </form>
+      <button th:if="${aplicado}" class="d-block btn btn-outline-success border-brand-light text-white mt-3" disabled>Ya has aplicado</button>
     </div>
     <p th:text="${oferta.descripcion}">Descripción de la oferta...</p>
   </main>
