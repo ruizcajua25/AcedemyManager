@@ -12,17 +12,23 @@
   <main class="p-4 text-white">
     <section>
       <h1>Candidatos</h1>
-      <table class="table table-bordered">
+      <table class="table table-dark table-striped">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Email</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="candidato : ${candidatos}">
             <td th:text="${candidato.nombre}"></td>
             <td th:text="${candidato.email}"></td>
+            <td>
+              <form action="#" method="post" th:action="@{/ofertas/{id}/aceptar/{candidatoId}(id=${oferta.id}, candidatoId=${candidato.id})}">
+                <button class="btn btn-success">Aceptar</button>
+              </form>
+            </td>
           </tr>
         </tbody>
       </table>

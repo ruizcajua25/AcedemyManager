@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.academymanager;
 
+import java.util.List;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -122,11 +124,21 @@ public class DataLoader implements CommandLineRunner {
       .academia(academiaTriana)
       .build());
 
+    Usuario candidatoUsuario = usuarioService.save(Usuario.builder()
+      .dni("44444444D")
+      .nombre("Lucia")
+      .apellidos("Fernandez Gomez")
+      .username("alumno2")
+      .password(passwordEncoder.encode("1234"))
+      .email("alumno2@academymanager.com")
+      .build());
+
     ofertaService.save(Oferta.builder()
       .academia(academiaTriana)
       .tipoOferta(TipoOferta.profesor)
       .titulo("Profesor de FP de Informática")
       .descripcion("Buscamos un profesor para impartir clases de informática en nuestro centro. Se valorará experiencia previa y titulación relacionada.")
+      .candidatos(List.of(candidatoUsuario))
       .build());
   }
 

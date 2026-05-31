@@ -91,7 +91,16 @@ public class OfertaController {
   public String verCandidatos(@PathVariable String id, Model model) {
     Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
     model.addAttribute("candidatos", oferta.getCandidatos());
+    model.addAttribute("oferta", oferta);
     return "ofertas/candidatos";
+  }
+
+  @PostMapping("/ofertas/{id}/aceptar/{candidatoId}")
+  public String aceptarCandidato(@PathVariable String id, @PathVariable String candidatoId) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    ofertaService.aceptarCandidato(oferta, candidatoId);
+    ofertaService.save(oferta);
+    return "redirect:/ofertas/" + id + "/candidatos";
   }
   
 }
