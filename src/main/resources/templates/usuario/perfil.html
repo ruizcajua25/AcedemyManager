@@ -11,7 +11,7 @@
   <div class="border-bottom">
     <div th:replace="~{fragments/navbar :: navbar-black-nofixed}"></div>
   </div>
-  <section th:if="${usuario}" class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
+  <main th:if="${usuario}" class="col-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
     <header class="d-flex justify-content-between align-items-start">
       <h1 class="mb-4">
         <span th:text="${usuario.nombre}"></span>
@@ -22,7 +22,7 @@
     <ul class="list-unstyled">
       <li th:text="${usuario.email}"></li>
     </ul>
-    <article class="mt-5">
+    <section class="mt-5">
       <h1>Mis Academias</h1>
       <ul class="list-unstyled">
         <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}">
@@ -44,10 +44,21 @@
           </li>
         </div>
       </ul>
-    </article>
-  </section>
-  <section th:unless="${usuario}">
+    </section>
+    <section class="mt-5">
+      <h1 class="mt-5 d-inline" style="line-height: 1rem;">Candidaturas Activas</h1>
+      <ul class="list-unstyled mt-2">
+        <div th:if="${ofertasAplicadas}" th:each="oferta : ${ofertasAplicadas}">
+          <li class="ms-3">
+            <h5 style="line-height: 1rem;" th:text="${oferta.titulo}"></h5>
+            <span style="opacity: 0.5;" th:text="${oferta.academia.nombre}"></span>
+          </li>
+        </div>
+      </ul>
+    </section>
+  </main>
+  <main th:unless="${usuario}">
     <p>Usuario no encontrado.</p>
-  </section>
+  </main>
 </body>
 </html>

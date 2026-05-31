@@ -13,13 +13,17 @@ import com.salesianostriana.dam.academymanager.repositories.OfertaRepository;
 @Service
 public class OfertaService extends BaseService<Oferta, String, OfertaRepository> {
   @Autowired
-  private OfertaRepository ofertaService;
+  private OfertaRepository ofertaRepository;
   
   public List<Oferta> findByAcademia (Academia academia) {
-    return ofertaService.findByAcademia(academia); 
+    return ofertaRepository.findByAcademia(academia); 
   }
 
   public void aplicar(Oferta oferta, Usuario usuario) {
     oferta.getCandidatos().add(usuario);
+  }
+
+  public List<Oferta> findByUsuarioId(String id) {
+    return ofertaRepository.findByCandidatosId(id);
   }
 }

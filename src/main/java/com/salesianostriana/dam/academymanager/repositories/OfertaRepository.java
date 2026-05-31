@@ -11,4 +11,5 @@ import com.salesianostriana.dam.academymanager.modules.Oferta;
 @Repository
 public interface OfertaRepository extends JpaRepository<Oferta, String> {
   public List<Oferta> findByAcademia(Academia academia);
+  public List<Oferta> findByCandidatosId(String id);
 }
