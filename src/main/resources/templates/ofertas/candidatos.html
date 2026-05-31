@@ -8,13 +8,27 @@
   <title>Document</title>
 </head>
 <body class="bg-brand-dark">
-  <div th:replace="fragments/navbar :: navbar-nofixed"></div>
+  <div th:replace="~{fragments/navbar :: navbar-nofixed}"></div>
   <main class="p-4 text-white">
     <section>
       <h1>Candidatos</h1>
-      <ul>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="candidato : ${candidatos}">
+            <td th:text="${candidato.nombre}"></td>
+            <td th:text="${candidato.email}"></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <ul>
         <li th:each="candidato : ${candidatos}" th:text="${candidato.nombre}"></li>
-      </ul>
+      </ul> -->
     </section>
   </main>
 </body>
