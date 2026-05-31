@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.academymanager.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -84,4 +85,13 @@ public class OfertaController {
     ofertaService.save(oferta);
     return "redirect:/academias/" + oferta.getAcademia().getId();
   }
+
+  @GetMapping("/ofertas/{id}/candidatos")
+  @PreAuthorize("@ofertaService.esDirectorDeOferta(#id, principal.id)")
+  public String verCandidatos(@PathVariable String id, Model model) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    model.addAttribute("candidatos", oferta.getCandidatos());
+    return "ofertas/candidatos";
+  }
+  
 }
