@@ -28,6 +28,9 @@
               <form action="#" method="post" th:action="@{/ofertas/{id}/aceptar/{candidatoId}(id=${oferta.id}, candidatoId=${candidato.id})}">
                 <button class="btn btn-success">Aceptar</button>
               </form>
+              <form action="#" method="post" th:action="@{/ofertas/{id}/rechazar/{candidatoId}(id=${oferta.id}, candidatoId=${candidato.id})}">
+                <button class="btn btn-danger">Rechazar</button>
+              </form>
             </td>
           </tr>
         </tbody>

@@ -102,5 +102,12 @@ public class OfertaController {
     ofertaService.save(oferta);
     return "redirect:/ofertas/" + id + "/candidatos";
   }
-  
+
+  @PostMapping("/ofertas/{id}/rechazar/{candidatoId}")
+  public String rechazarCandidato(@PathVariable String id, @PathVariable String candidatoId) {
+    Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    ofertaService.rechazarCandidato(oferta, candidatoId);
+    ofertaService.save(oferta);
+    return "redirect:/ofertas/" + id + "/candidatos";
+  }
 }

@@ -78,4 +78,13 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
       );
     }
   }
+
+  public void rechazarCandidato(Oferta oferta, String candidatoId) {
+    Usuario candidato = oferta.getCandidatos().stream()
+      .filter(c -> c.getId().equals(candidatoId))
+      .findFirst()
+      .orElseThrow(() -> new RuntimeException("Candidato no encontrado"));
+
+    oferta.getCandidatos().remove(candidato);
+  }
 }
