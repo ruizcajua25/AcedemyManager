@@ -38,7 +38,7 @@ public class OfertaController {
   @PostMapping("/ofertas/crear")
   public String crearOferta(@ModelAttribute("oferta") Oferta oferta) {
     ofertaService.save(oferta);
-    return "redirect:/academias/" + oferta.getAcademia().getId();
+    return "redirect:/ofertas/" + oferta.getId();
   }
 
   @GetMapping("/ofertas/{id}")
@@ -83,7 +83,7 @@ public class OfertaController {
     Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
     ofertaService.aplicar(oferta, usuario);
     ofertaService.save(oferta);
-    return "redirect:/academias/" + oferta.getAcademia().getId();
+    return "redirect:/ofertas/" + oferta.getId();
   }
 
   @GetMapping("/ofertas/{id}/candidatos")
