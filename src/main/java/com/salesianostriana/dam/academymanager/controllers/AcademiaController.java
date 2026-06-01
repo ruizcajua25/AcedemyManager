@@ -17,6 +17,8 @@ import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.CursoService;
 import com.salesianostriana.dam.academymanager.services.DirectorService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
@@ -75,4 +77,11 @@ public class AcademiaController {
     model.addAttribute("cursos", academia.getCursos());
     return "academia/detalle";
   }
+
+  @GetMapping("/academias/mi")
+  public String misAcademias(@AuthenticationPrincipal Usuario usuario, Model model) {
+    model.addAttribute("academias", academiaService.findAllByUsuario(usuario.getId()));
+    return "academia/mi";
+  }
+  
 }

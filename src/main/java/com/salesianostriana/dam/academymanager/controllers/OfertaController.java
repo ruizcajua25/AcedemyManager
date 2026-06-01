@@ -42,6 +42,12 @@ public class OfertaController {
     return "redirect:/ofertas/" + oferta.getId();
   }
 
+  @GetMapping("/ofertas/buscar")
+  public String buscarOfertas(Model model) {
+    model.addAttribute("ofertas", ofertaService.findAll().stream().filter(oferta -> ofertaService.esOfertaAplicable(oferta)).toList());
+    return "ofertas/buscar";
+  }
+
   @GetMapping("/ofertas/{id}")
   public String detallesOferta(@PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
     Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
