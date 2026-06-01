@@ -5,37 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="/styles/colors.css">
-  <title>Crear academia</title>
+  <title>Editar academia</title>
 </head>
-<body class="bg-brand-dark min-vh-100">
+<body class="bg-brand-dark">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
   <main class="container py-5">
-    <div class="container-sm border p-4 rounded bg-white shadow-lg" style="max-width: 45rem;">
-      <h1 class="text-center mb-5 text-brand display-2">Crea tu academia</h1>
-      <form class="d-flex flex-column gap-4" action="#" th:action="@{/academia/create}" th:object="${academia}" method="post">
-        <div>
+    <form class="d-flex flex-column bg-white gap-3 border p-4 rounded shadow-lg text-dark" action="#" th:action="@{/academias/{id}/editar(id=${academia.id})}" th:object="${academia}" method="post">
+      <h1 class="text-brand mb-3">Editar academia</h1>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
           <label class="form-label" for="nombre">Nombre de la academia:</label>
           <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" required>
         </div>
-        <div>
-          <label class="form-label" for="descripcion">Descripcion:</label>
-          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4"></textarea>
-        </div>
-        <div>
-          <label class="form-label" for="direccion">Direccion:</label>
-          <input class="form-control" type="text" id="direccion" name="direccion" th:field="*{direccion}">
-        </div>
-        <div>
-          <label class="form-label" for="telefono">Telefono:</label>
-          <input class="form-control" type="text" id="telefono" name="telefono" th:field="*{telefono}">
-        </div>
-        <div>
+
+        <div class="col-12 col-md-6">
           <label class="form-label" for="email">Correo electronico:</label>
           <input class="form-control" type="email" id="email" name="email" th:field="*{email}">
         </div>
-        <button class="btn bg-brand text-white" type="submit">Crear academia</button>
-      </form>
-    </div>
+
+        <div class="col-12">
+          <label class="form-label" for="descripcion">Descripcion:</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4"></textarea>
+        </div>
+
+        <div class="col-12 col-md-8">
+          <label class="form-label" for="direccion">Direccion:</label>
+          <input class="form-control" type="text" id="direccion" name="direccion" th:field="*{direccion}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="telefono">Telefono:</label>
+          <input class="form-control" type="text" id="telefono" name="telefono" th:field="*{telefono}">
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 mt-3">
+        <button class="btn bg-brand text-white" type="submit">Editar academia</button>
+        <a class="btn btn-secondary" th:href="@{/academias/{id}(id=${academia.id})}">Volver</a>
+      </div>
+    </form>
   </main>
 </body>
 </html>

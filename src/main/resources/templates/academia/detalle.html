@@ -10,7 +10,13 @@
 <body class="bg-brand-dark text-white">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
   <main class="p-5">
-    <h1 th:text="${academia.nombre}">Nombre de la academia</h1>
+    <div class="d-flex justify-content-between gap-4 align-items-start">
+      <div>
+        <h1 th:text="${academia.nombre}">Nombre de la academia</h1>
+        <p class="lead text-white-50 mb-0" th:if="${academia.descripcion}" th:text="${academia.descripcion}">Descripcion de la academia</p>
+      </div>
+      <a class="btn text-white border" th:href="@{/academias/{id}/editar(id=${academia.id})}" th:if="${director}">Editar academia</a>
+    </div>
     <section class="mt-5">
       <div class="d-flex gap-5 align-items-center">
         <h1 class="mb-0">Ofertas</h1>

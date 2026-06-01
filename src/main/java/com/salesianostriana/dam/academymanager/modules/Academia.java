@@ -28,6 +28,7 @@ public class Academia {
   @GeneratedValue
   private String id;
   private String nombre;
+  private String descripcion;
   private String direccion;
   private String telefono;
   private String email;

@@ -59,6 +59,38 @@ public class AcademiaController {
     return "redirect:/perfil";
   }
 
+  @GetMapping("/academias/{id}/editar")
+  public String editarFormulario(@PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Academia academia = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontro la academia con ID: " + id));
+    boolean isDirector = academia.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
+
+    if (!isDirector) {
+      throw new RuntimeException("No puedes editar esta academia");
+    }
+
+    model.addAttribute("academia", academia);
+    return "academia/editar";
+  }
+
+  @PostMapping("/academias/{id}/editar")
+  public String editar(@PathVariable String id, @ModelAttribute Academia academia, @AuthenticationPrincipal Usuario usuario) {
+    Academia academiaOriginal = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontro la academia con ID: " + id));
+    boolean isDirector = academiaOriginal.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
+
+    if (!isDirector) {
+      throw new RuntimeException("No puedes editar esta academia");
+    }
+
+    academiaOriginal.setNombre(academia.getNombre());
+    academiaOriginal.setDescripcion(academia.getDescripcion());
+    academiaOriginal.setDireccion(academia.getDireccion());
+    academiaOriginal.setTelefono(academia.getTelefono());
+    academiaOriginal.setEmail(academia.getEmail());
+
+    academiaService.save(academiaOriginal);
+    return "redirect:/academias/" + id;
+  }
+
   @GetMapping("/academias/find")
   public String formulario(Model model) {
     model.addAttribute("academias", academiaService.findAll());
