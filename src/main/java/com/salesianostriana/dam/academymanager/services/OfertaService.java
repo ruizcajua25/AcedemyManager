@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.academymanager.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
+import com.salesianostriana.dam.academymanager.modules.Curso;
 import com.salesianostriana.dam.academymanager.modules.Director;
 import com.salesianostriana.dam.academymanager.modules.Oferta;
 import com.salesianostriana.dam.academymanager.modules.Profesor;
@@ -86,5 +88,13 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
       .orElseThrow(() -> new RuntimeException("Candidato no encontrado"));
 
     oferta.getCandidatos().remove(candidato);
+  }
+
+  public boolean esOfertaAplicable (Oferta oferta) {
+    if(oferta.getCurso() == null || oferta.getCurso().getFechaInicio() == null) {
+      return oferta.isActiva();
+    }
+
+    return oferta.isActiva() && oferta.getCurso().getFechaInicio().isAfter(LocalDate.now());
   }
 }

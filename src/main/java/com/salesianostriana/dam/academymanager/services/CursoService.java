@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.academymanager.services;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,4 +17,14 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     alumnos.removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
     curso.setAlumnos(alumnos);
   }
+
+  public boolean esCursoActivo (Curso curso) {
+    if(curso.getFechaInicio() == null) {
+      return true;
+    }
+
+    return curso.getFechaInicio().isBefore(LocalDate.now()) && curso.getFechaFin().isAfter(LocalDate.now());
+  }
+
+
 }

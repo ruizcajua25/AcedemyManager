@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.academymanager.modules;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -26,6 +27,8 @@ public class Curso {
 
   private String nombre;
   private String descripcion;
+  private LocalDate fechaInicio;
+  private LocalDate fechaFin;
 
   @ManyToOne
   private Academia academia;

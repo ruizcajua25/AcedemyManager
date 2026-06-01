@@ -14,6 +14,7 @@ import com.salesianostriana.dam.academymanager.modules.Director;
 import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
+import com.salesianostriana.dam.academymanager.services.CursoService;
 import com.salesianostriana.dam.academymanager.services.DirectorService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
 
@@ -24,6 +25,8 @@ public class AcademiaController {
   private AcademiaService academiaService;
   @Autowired
   private DirectorService directorService;
+  @Autowired
+  private CursoService cursoService;
   @Autowired
   private OfertaService ofertaService; 
 
@@ -66,8 +69,8 @@ public class AcademiaController {
     boolean isDirector = academia.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
     model.addAttribute("director", isDirector);
     model.addAttribute("academia", academia);
-    model.addAttribute("ofertas", ofertaService.findByAcademia(academia));
-    model.addAttribute("cursos", academia.getCursos());
+    model.addAttribute("ofertasActivas", ofertaService.findByAcademia(academia).stream().filter(oferta -> ofertaService.esOfertaAplicable(oferta)).toList());
+    model.addAttribute("cursosActivos", academia.getCursos().stream().filter(curso -> cursoService.esCursoActivo(curso)).toList());
     model.addAttribute("alumno", academia.getAlumnos().stream().filter(alumno -> alumno.getUsuario().getId().equals(usuario.getId())).findFirst().orElse(null));
     return "academia/detalle";
   }

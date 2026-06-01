@@ -36,4 +36,7 @@ public class Oferta {
 
   @ManyToOne
   private Curso curso;
+
+  @Builder.Default
+  private boolean activa = true;
 }
