@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title th:text="${curso.nombre}">Curso</title>
+</head>
+<body class="bg-brand-dark text-white">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+  <main class="p-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-4 mb-5">
+      <div>
+        <h1 class="mb-2" th:text="${curso.nombre}">Nombre del curso</h1>
+        <div>
+          <a class="text-white opacity-50" th:href="@{/academias/{id}(id=${curso.academia.id})}" th:text="${curso.academia.nombre}">Academia</a>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column gap-2" th:if="${editable}">
+        <div class="d-flex gap-2 justify-content-md-end">
+          <a class="btn btn-outline-success border-brand-light text-white" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">Editar</a>
+          <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/borrar(academiaId=${curso.academia.id}, id=${curso.id})}" style="display:inline;">
+            <button id="boton-borrar" type="submit" class="btn btn-outline-danger border-danger text-white">Borrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <section class="mb-5">
+      <h2 class="h4">Descripcion</h2>
+      <p class="lead" th:text="${curso.descripcion}">Descripcion del curso...</p>
+    </section>
+
+  </main>
+
+  <script>
+    const botonBorrar = document.getElementById('boton-borrar');
+    if (botonBorrar) {
+      botonBorrar.addEventListener('click', function(event) {
+        if (!confirm('Estas seguro de que quieres borrar este curso?')) {
+          event.preventDefault();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
