@@ -48,6 +48,7 @@ public class OfertaController {
     model.addAttribute("oferta", oferta);
     model.addAttribute("editable", editable);
     model.addAttribute("aplicado", oferta.getCandidatos().stream().anyMatch(c -> c.getId().equals(usuario.getId())));
+    model.addAttribute("aplicable", ofertaService.esOfertaAplicable(oferta));
     return "ofertas/detalle";
   }  
 
@@ -81,6 +82,9 @@ public class OfertaController {
   @PostMapping("/ofertas/aplicar")
   public String aplicarOferta(@RequestParam String id, @AuthenticationPrincipal Usuario usuario) {
     Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
+    if (!ofertaService.esOfertaAplicable(oferta)) {
+      throw new RuntimeException("No puedes aplicar a esta oferta");
+    }
     ofertaService.aplicar(oferta, usuario);
     ofertaService.save(oferta);
     return "redirect:/ofertas/" + oferta.getId();
