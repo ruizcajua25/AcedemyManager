@@ -32,6 +32,7 @@ public class OfertaController {
     Oferta oferta = new Oferta();
     oferta.setAcademia(academiaService.findById(academiaId).orElseThrow(() -> new RuntimeException("Academia no encontrada")));
     model.addAttribute("oferta", oferta);
+    model.addAttribute("cursos", oferta.getAcademia().getCursos());
     return "ofertas/crear";
   }
 
@@ -67,6 +68,7 @@ public class OfertaController {
     ofertaOriginal.setTitulo(oferta.getTitulo());
     ofertaOriginal.setDescripcion(oferta.getDescripcion());
     ofertaOriginal.setTipoOferta(oferta.getTipoOferta());
+    ofertaOriginal.setCurso(oferta.getCurso());
 
     ofertaService.save(ofertaOriginal);
     return "redirect:/ofertas/" + id;
