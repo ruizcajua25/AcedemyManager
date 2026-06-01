@@ -34,6 +34,11 @@
       </div>
     </div>
 
+    <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}">
+      <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
+      -
+      <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+    </div>
     <section class="mb-5">
       <h2 class="h4">Descripcion</h2>
       <p class="lead" th:text="${curso.descripcion}">Descripcion del curso...</p>

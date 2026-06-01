@@ -28,6 +28,16 @@
           <label class="form-label" for="descripcion">Descripcion</label>
           <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4" placeholder="Escribe aqui la descripcion del curso..."></textarea>
         </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="fechaInicio">Fecha de inicio</label>
+          <input class="form-control" type="date" id="fechaInicio" name="fechaInicio" th:field="*{fechaInicio}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="fechaFin">Fecha de final</label>
+          <input class="form-control" type="date" id="fechaFin" name="fechaFin" th:field="*{fechaFin}">
+        </div>
       </div>
 
       <button class="btn bg-brand text-white align-self-start" type="submit">Editar curso</button>
