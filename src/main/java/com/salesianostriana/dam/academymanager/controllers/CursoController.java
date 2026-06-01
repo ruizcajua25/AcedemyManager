@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,6 +72,40 @@ public class CursoController {
 
     return "cursos/personas";
   }
+
+  @GetMapping("/{id}/profesores/add")
+  public String addProfesorForm(@PathVariable String academiaId, @PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
+
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    model.addAttribute("curso", curso);
+    model.addAttribute("profesoresDisponibles", curso.getAcademia().getProfesores().stream()
+      .filter(profesor -> curso.getProfesores().stream().noneMatch(p -> p.getId().equals(profesor.getId())))
+      .toList());
+
+    return "cursos/add-profesores";
+  }
+
+  @GetMapping("/{id}/alumnos/add")
+  public String addAlumnoForm(@PathVariable String academiaId, @PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
+
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    model.addAttribute("curso", curso);
+    model.addAttribute("alumnosDisponibles", curso.getAcademia().getAlumnos().stream()
+      .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
+      .toList());
+
+    return "cursos/add-alumnos";
+  }
   
   
   @GetMapping("/crear")
@@ -115,7 +150,7 @@ public class CursoController {
   }
 
   @PostMapping("/{id}/profesores/add")
-  public String addProfesor(@PathVariable String academiaId, @PathVariable String id, @RequestParam String profesorId, @AuthenticationPrincipal Usuario usuario) {
+  public String addProfesor(@PathVariable String academiaId, @PathVariable String id, @RequestParam(required = false) List<String> profesorId, @AuthenticationPrincipal Usuario usuario) {
     Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
     boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
 
@@ -124,12 +159,16 @@ public class CursoController {
     }
 
     Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
-    profesores.add(
-      profesorService.findById(TipoUsuarioId.builder()
-      .academiaId(academiaId)
-      .usuarioId(profesorId)
-      .build()).orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado"))
-    );
+    if (profesorId != null) {
+      for (String p : profesorId) {
+        profesores.add(
+          profesorService.findById(TipoUsuarioId.builder()
+          .academiaId(academiaId)
+          .usuarioId(p)
+          .build()).orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado"))
+        );
+      }
+    }
     curso.setProfesores(profesores);
 
     cursoService.save(curso);
@@ -138,7 +177,7 @@ public class CursoController {
   }
 
   @PostMapping("/{id}/alumnos/add")
-  public String addAlumno(@PathVariable String academiaId, @PathVariable String id, @RequestParam String alumnoId, @AuthenticationPrincipal Usuario usuario) {
+  public String addAlumno(@PathVariable String academiaId, @PathVariable String id, @RequestParam(required = false) List<String> alumnoId, @AuthenticationPrincipal Usuario usuario) {
     Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
     boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
 
@@ -147,13 +186,49 @@ public class CursoController {
     }
 
     Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
-    alumnos.add(
-      alumnoService.findById(TipoUsuarioId.builder()
-      .academiaId(academiaId)
-      .usuarioId(alumnoId)
-      .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado")
-    ));
+    if (alumnoId != null) {
+      for (String a : alumnoId) {
+        alumnos.add(
+          alumnoService.findById(TipoUsuarioId.builder()
+          .academiaId(academiaId)
+          .usuarioId(a)
+          .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado")
+        ));
+      }
+    }
     curso.setAlumnos(alumnos);
+    cursoService.save(curso);
+
+    return "redirect:/academias/{academiaId}/cursos/" + id + "/personas";
+  }
+
+  @PostMapping("/{id}/alumnos/{alumnoId}/eliminar")
+  public String deleteAlumno(@PathVariable String academiaId, @PathVariable String id, @PathVariable String alumnoId, @AuthenticationPrincipal Usuario usuario) {
+    Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
+
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    cursoService.eliminarAlumno(curso, alumnoId);
+    cursoService.save(curso);
+
+    return "redirect:/academias/{academiaId}/cursos/" + id + "/personas";
+  }
+
+  @PostMapping("/{id}/profesores/{profesorId}/eliminar")
+  public String deleteProfesor(@PathVariable String academiaId, @PathVariable String id, @PathVariable String profesorId, @AuthenticationPrincipal Usuario usuario) {
+    Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
+
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
+    profesores.removeIf(profesor -> profesor.getUsuario().getId().equals(profesorId));
+    curso.setProfesores(profesores);
     cursoService.save(curso);
 
     return "redirect:/academias/{academiaId}/cursos/" + id + "/personas";

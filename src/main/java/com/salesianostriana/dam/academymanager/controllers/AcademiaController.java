@@ -68,6 +68,7 @@ public class AcademiaController {
     model.addAttribute("academia", academia);
     model.addAttribute("ofertas", ofertaService.findByAcademia(academia));
     model.addAttribute("cursos", academia.getCursos());
+    model.addAttribute("alumno", academia.getAlumnos().stream().filter(alumno -> alumno.getUsuario().getId().equals(usuario.getId())).findFirst().orElse(null));
     return "academia/detalle";
   }
 }

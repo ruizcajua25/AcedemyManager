@@ -11,7 +11,7 @@
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
   <header class="mt-3 text-white">
     <nav class="navbar d-flex justify-content-center gap-4">
-      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Información</a>
+      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Informacion</a>
       <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Personas</a>
     </nav>
   </header>
@@ -24,16 +24,15 @@
       <table th:if="${#sets.size(profesores) > 0}" class="table table-dark table-bordered">
         <tr th:each="profesor : ${profesores}">
           <td th:text="${profesor.usuario.nombre}"></td>
+          <td th:if="${editable}">
+            <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/profesores/{profesorId}/eliminar(academiaId=${curso.academia.id}, id=${curso.id}, profesorId=${profesor.usuario.id})}">
+              <button class="btn btn-danger">Eliminar</button>
+            </form>
+          </td>
         </tr>
       </table>
     </ul>
-    <form class="d-flex gap-2 mb-5" method="post" th:if="${editable}" th:action="@{/academias/{academiaId}/cursos/{id}/profesores/add(academiaId=${curso.academia.id}, id=${curso.id})}">
-      <select class="form-select w-auto" name="profesorId" required>
-        <option value="">Selecciona un profesor</option>
-        <option th:each="profesor : ${profesoresDisponibles}" th:value="${profesor.usuario.id}" th:text="${profesor.usuario.nombre}"></option>
-      </select>
-      <button class="btn bg-brand text-white" type="submit">Añadir profesor</button>
-    </form>
+    <a class="btn bg-brand text-white mb-5" th:if="${editable}" th:href="@{/academias/{academiaId}/cursos/{id}/profesores/add(academiaId=${curso.academia.id}, id=${curso.id})}">Anadir profesor</a>
 
     <h3 class="text-brand-light">Alumnos</h3>
     <ul>
@@ -41,16 +40,15 @@
       <table th:if="${#sets.size(alumnos) > 0}" class="table table-dark table-bordered">
         <tr th:each="alumno : ${alumnos}">
           <td th:text="${alumno.usuario.nombre}"></td>
+          <td th:if="${editable}">
+            <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/alumnos/{alumnoId}/eliminar(academiaId=${curso.academia.id}, id=${curso.id}, alumnoId=${alumno.usuario.id})}">
+              <button class="btn btn-danger">Eliminar</button>
+            </form>
+          </td>
         </tr>
       </table>
     </ul>
-    <form class="d-flex gap-2" method="post" th:if="${editable}" th:action="@{/academias/{academiaId}/cursos/{id}/alumnos/add(academiaId=${curso.academia.id}, id=${curso.id})}">
-      <select class="form-select w-auto" name="alumnoId" required>
-        <option value="">Selecciona un alumno</option>
-        <option th:each="alumno : ${alumnosDisponibles}" th:value="${alumno.usuario.id}" th:text="${alumno.usuario.nombre}"></option>
-      </select>
-      <button class="btn bg-brand text-white" type="submit">Añadir alumno</button>
-    </form>
+    <a class="btn bg-brand text-white" th:if="${editable}" th:href="@{/academias/{academiaId}/cursos/{id}/alumnos/add(academiaId=${curso.academia.id}, id=${curso.id})}">Anadir alumno</a>
   </main>
 </body>
 </html>
