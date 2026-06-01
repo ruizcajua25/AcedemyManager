@@ -1,11 +1,12 @@
 package com.salesianostriana.dam.academymanager.modules;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,14 @@ public class Curso {
   private String nombre;
   private String descripcion;
 
-  @ManyToMany
-  private List<Alumno> alumnos;
+  @ManyToOne
+  private Academia academia;
 
   @ManyToMany
-  private List<Profesor> profesores;
+  @Builder.Default
+  private Set<Alumno> alumnos = Set.of();
+
+  @ManyToMany
+  @Builder.Default
+  private Set<Profesor> profesores = Set.of();
 }
