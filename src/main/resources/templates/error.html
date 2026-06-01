@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Error - Academy Manager</title>
+</head>
+<body class="min-vh-100 d-flex flex-column bg-brand-dark text-white">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+
+  <main class="container flex-grow-1 d-flex align-items-center py-5">
+    <section class="row justify-content-center w-100">
+      <article class="col-12 col-lg-8">
+        <div class="border border-brand-light rounded p-4 p-md-5 shadow-lg bg-brand-dark">
+          <p class="text-brand-light text-uppercase fw-semibold mb-2">Error</p>
+          <h1 class="display-1 fw-bold text-brand-light mb-3" th:text="${status}">404</h1>
+          <h2 class="h1 fw-semibold mb-3" th:text="${titulo}">Pagina no encontrada</h2>
+          <p class="lead mb-4" th:text="${mensaje}">La pagina que buscas no existe o se ha movido.</p>
+
+          <div class="d-flex flex-column flex-sm-row gap-3">
+            <a class="btn bg-brand-light text-dark px-4" href="/">Volver al inicio</a>
+            <a class="btn btn-outline-success border-brand-light text-white px-4" href="/academias/find">Buscar academia</a>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
