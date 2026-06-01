@@ -3,6 +3,7 @@ package com.salesianostriana.dam.academymanager.modules;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -29,6 +30,7 @@ public class Oferta {
   
   private TipoOferta tipoOferta;
   private String titulo;
+  @Column(length = 500)
   private String descripcion;
   @ManyToMany
   @Builder.Default
