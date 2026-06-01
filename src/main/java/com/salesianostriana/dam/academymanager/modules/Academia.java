@@ -43,4 +43,8 @@ public class Academia {
   @OneToMany(mappedBy = "academia")
   @ToString.Exclude
   private Set<Director> directores;
+
+  @OneToMany(mappedBy = "academia")
+  @ToString.Exclude
+  private Set<Curso> cursos;
 }
