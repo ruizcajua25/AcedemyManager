@@ -37,7 +37,8 @@
         <div class="d-flex gap-5 align-items-center">
           <h1 class="mb-0">Mis Cursos</h1>
         </div>
-        <ul>
+        <span th:if="${#sets.size(alumno.cursos) == 0}">No estás matriculado en ningún curso.</span>
+        <ul th:if="${#sets.size(alumno.cursos) > 0}">
           <li th:each="curso : ${alumno.cursos}">
             <a class="link-light" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" th:text="${curso.nombre}"></a>
           </li>

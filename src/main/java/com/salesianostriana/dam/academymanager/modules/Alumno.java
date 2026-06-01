@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.academymanager.modules;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -36,5 +36,5 @@ public class Alumno {
 
 
   @ManyToMany(mappedBy = "alumnos")
-  private List<Curso> cursos;
+  private Set<Curso> cursos;
 }
