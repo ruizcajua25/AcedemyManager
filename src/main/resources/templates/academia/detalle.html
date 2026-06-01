@@ -21,10 +21,10 @@
           <a class="link-light" th:href="@{/ofertas/{id}(id=${oferta.id})}" th:text="${oferta.titulo}"></a>
         </li>
       </ul>
-      <div th:if="${alumno == null}">
+      <div th:if="${alumno == null && director == null}">
+        <span>No puedes ver las ofertas de esta academia. Solo los alumnos matriculados y el director pueden verlas.</span>
         <div class="d-flex gap-5 align-items-center">
           <h1 class="mb-0">Cursos Disponibles</h1>
-          <a class="btn text-white border" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" th:if="${director}">Crear curso</a>
         </div>
         <ul>
           <li th:each="curso : ${cursosActivos}">
@@ -33,13 +33,23 @@
         </ul>
       </div>
       
-      <div th:if="${alumno}">
-        <div class="d-flex gap-5 align-items-center">
-          <h1 class="mb-0">Mis Cursos</h1>
-        </div>
+      <div th:if="${alumno}">        
+        <h1 class="mb-0">Mis Cursos</h1>
         <span th:if="${#sets.size(alumno.cursos) == 0}">No estás matriculado en ningún curso.</span>
         <ul th:if="${#sets.size(alumno.cursos) > 0}">
           <li th:each="curso : ${alumno.cursos}">
+            <a class="link-light" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" th:text="${curso.nombre}"></a>
+          </li>
+        </ul>
+      </div>
+
+      <div th:if="${director}">
+        <div class="d-flex gap-5 align-items-center">
+          <h1>Todo los cursos</h1>
+          <a class="btn text-white border" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" th:if="${director}">Crear curso</a>
+        </div>
+        <ul>
+          <li th:each="curso : ${cursos}">
             <a class="link-light" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" th:text="${curso.nombre}"></a>
           </li>
         </ul>
