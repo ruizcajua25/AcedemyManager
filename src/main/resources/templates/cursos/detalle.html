@@ -9,7 +9,13 @@
 </head>
 <body class="bg-brand-dark text-white">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
-  <main class="p-5">
+  <header class="mt-3">
+    <nav class="navbar d-flex justify-content-center gap-4">
+      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Información</a>
+      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Personas</a>
+    </nav>
+  </header>
+  <main class="px-5 py-2">
     <div class="d-flex flex-column flex-md-row justify-content-between gap-4 mb-5">
       <div>
         <h1 class="mb-2" th:text="${curso.nombre}">Nombre del curso</h1>

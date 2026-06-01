@@ -67,6 +67,7 @@ public class AcademiaController {
     model.addAttribute("director", isDirector);
     model.addAttribute("academia", academia);
     model.addAttribute("ofertas", ofertaService.findByAcademia(academia));
+    model.addAttribute("cursos", academia.getCursos());
     return "academia/detalle";
   }
 }

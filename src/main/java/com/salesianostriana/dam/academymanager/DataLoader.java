@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.academymanager;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
+import com.salesianostriana.dam.academymanager.modules.Curso;
 import com.salesianostriana.dam.academymanager.modules.Director;
 import com.salesianostriana.dam.academymanager.modules.Oferta;
 import com.salesianostriana.dam.academymanager.modules.Profesor;
@@ -16,6 +18,7 @@ import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.AlumnoService;
+import com.salesianostriana.dam.academymanager.services.CursoService;
 import com.salesianostriana.dam.academymanager.services.DirectorService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
 import com.salesianostriana.dam.academymanager.services.ProfesorService;
@@ -34,6 +37,7 @@ public class DataLoader implements CommandLineRunner {
   private final ProfesorService profesorService;
   private final PasswordEncoder passwordEncoder;
   private final OfertaService ofertaService;
+  private final CursoService cursoService;
 
   @Override
   public void run(String... args) {
@@ -77,6 +81,13 @@ public class DataLoader implements CommandLineRunner {
       .telefono("954123456")
       .email("info@academiatriana.com")
       .build());
+
+    cursoService.save(Curso.builder()
+      .nombre("Informatica")
+      .descripcion("Estudio de informatica")
+      .academia(academiaTriana)
+      .build()
+    );
 
     academiaService.save(Academia.builder()
       .nombre("Academia Nervión")

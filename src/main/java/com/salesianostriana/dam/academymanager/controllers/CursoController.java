@@ -53,6 +53,26 @@ public class CursoController {
     return "cursos/detalle";
   }
   
+  @GetMapping("/{id}/personas")
+  public String personas(@PathVariable String academiaId, @PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
+    Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
+
+    model.addAttribute("curso", curso);
+    model.addAttribute("profesores", curso.getProfesores());
+    model.addAttribute("alumnos", curso.getAlumnos());
+    model.addAttribute("editable", editable);
+    model.addAttribute("profesoresDisponibles", curso.getAcademia().getProfesores().stream()
+      .filter(profesor -> curso.getProfesores().stream().noneMatch(p -> p.getId().equals(profesor.getId())))
+      .toList());
+    model.addAttribute("alumnosDisponibles", curso.getAcademia().getAlumnos().stream()
+      .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
+      .toList());
+
+    return "cursos/personas";
+  }
+  
+  
   @GetMapping("/crear")
   public String crearCurso(Model model, @PathVariable String academiaId) {
     Academia academia = academiaService.findById(academiaId).orElseThrow(() -> new IllegalArgumentException("Academia no encontrada"));
@@ -94,34 +114,48 @@ public class CursoController {
     return "redirect:/academias/{academiaId}";
   }
 
-  @PostMapping("/{id}/profesores/{profesorId}/add")
-  public String addProfesor(@PathVariable String academiaId, @PathVariable String id, @PathVariable String profesorId, @AuthenticationPrincipal Usuario usuario) {
+  @PostMapping("/{id}/profesores/add")
+  public String addProfesor(@PathVariable String academiaId, @PathVariable String id, @RequestParam String profesorId, @AuthenticationPrincipal Usuario usuario) {
     Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
 
-    curso.getProfesores().add(
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
+    profesores.add(
       profesorService.findById(TipoUsuarioId.builder()
       .academiaId(academiaId)
       .usuarioId(profesorId)
       .build()).orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado"))
     );
+    curso.setProfesores(profesores);
 
     cursoService.save(curso);
 
-    return "redirect:/academias/{academiaId}/cursos/" + id;
+    return "redirect:/academias/{academiaId}/cursos/" + id + "/personas";
   }
 
   @PostMapping("/{id}/alumnos/add")
-  public String addAlumno(@PathVariable String academiaId, @PathVariable String id, @PathVariable String alumnoId, @AuthenticationPrincipal Usuario usuario) {
+  public String addAlumno(@PathVariable String academiaId, @PathVariable String id, @RequestParam String alumnoId, @AuthenticationPrincipal Usuario usuario) {
     Curso curso = cursoService.findById(id).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+    boolean editable = curso.getAcademia().getDirectores().stream().anyMatch(d -> d.getUsuario().getId().equals(usuario.getId()));
 
-    curso.getAlumnos().add(
+    if (!editable) {
+      throw new IllegalArgumentException("No tienes permiso para editar este curso");
+    }
+
+    Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
+    alumnos.add(
       alumnoService.findById(TipoUsuarioId.builder()
       .academiaId(academiaId)
       .usuarioId(alumnoId)
       .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado")
     ));
+    curso.setAlumnos(alumnos);
     cursoService.save(curso);
 
-    return "redirect:/academias/{academiaId}/cursos/" + id;
+    return "redirect:/academias/{academiaId}/cursos/" + id + "/personas";
   }
 }

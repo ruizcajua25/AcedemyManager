@@ -21,6 +21,15 @@
           <a class="link-light" th:href="@{/ofertas/{id}(id=${oferta.id})}" th:text="${oferta.titulo}"></a>
         </li>
       </ul>
+      <div class="d-flex gap-5 align-items-center">
+        <h1 class="mb-0">Cursos</h1>
+        <a class="btn text-white border" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" th:if="${director}">Crear curso</a>
+      </div>
+      <ul>
+        <li th:each="curso : ${cursos}">
+          <a class="link-light" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" th:text="${curso.nombre}"></a>
+        </li>
+      </ul>
     </section>
   </main>
 </body>
