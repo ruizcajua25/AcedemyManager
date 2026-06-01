@@ -19,20 +19,27 @@
   <script defer>
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('searchInput');
+      const tipoOferta = document.getElementById('tipoOferta');
       const ofertas = document.querySelectorAll('.oferta');
 
-      searchInput.addEventListener('input', () => {
+      function filtrarOfertas() {
         const filter = searchInput.value.toLowerCase();
+        const tipo = tipoOferta.value;
 
         ofertas.forEach(oferta => {
           const text = oferta.textContent.toLowerCase();
-          if (text.includes(filter)) {
+          const tipoOferta = oferta.dataset.tipo;
+
+          if (text.includes(filter) && (tipo == '' || tipoOferta == tipo)) {
             oferta.style.display = '';
           } else {
             oferta.style.display = 'none';
           }
         });
-      });
+      }
+
+      searchInput.addEventListener('input', filtrarOfertas);
+      tipoOferta.addEventListener('change', filtrarOfertas);
     });
   </script>
 </head>
@@ -45,7 +52,19 @@
       <p class="lead text-white-50 mb-0">Encuentra ofertas abiertas en las academias.</p>
     </header>
 
-    <input class="form-control form-control-lg mb-4" type="text" placeholder="Buscar oferta..." id="searchInput">
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-8">
+        <input class="form-control" type="text" placeholder="Buscar oferta..." id="searchInput">
+      </div>
+      <div class="col-12 col-md-4">
+        <select class="form-select" id="tipoOferta">
+          <option value="">Todas las ofertas</option>
+          <option value="profesor">Profesor</option>
+          <option value="direccion">Direccion</option>
+          <option value="alumno">Alumno</option>
+        </select>
+      </div>
+    </div>
 
     <div th:if="${#lists.size(ofertas) == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
       <h2 class="h3 fw-bold mb-3">No hay ofertas disponibles</h2>
@@ -53,7 +72,7 @@
     </div>
 
     <section th:if="${#lists.size(ofertas) > 0}" class="row g-4">
-      <div class="oferta col-12 col-md-6 col-xl-4" th:each="oferta : ${ofertas}">
+      <div class="oferta col-12 col-md-6 col-xl-4" th:each="oferta : ${ofertas}" th:data-tipo="${oferta.tipoOferta}">
         <a class="text-decoration-none" th:href="@{/ofertas/{id}(id=${oferta.id})}">
           <article class="oferta-card bg-white text-dark rounded shadow-sm p-4 h-100">
             <div class="d-flex justify-content-between gap-3 align-items-start mb-3">
