@@ -138,6 +138,8 @@ public class CursoController {
 
     cursoOriginal.setNombre(curso.getNombre());
     cursoOriginal.setDescripcion(curso.getDescripcion());
+    cursoOriginal.setFechaInicio(curso.getFechaInicio());
+    cursoOriginal.setFechaFin(curso.getFechaFin());
 
     cursoService.save(cursoOriginal);
     return "redirect:/academias/{academiaId}/cursos/" + id;
