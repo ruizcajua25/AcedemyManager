@@ -33,4 +33,7 @@ public class Oferta {
   @ManyToMany
   @Builder.Default
   private List<Usuario> candidatos = new ArrayList<>();
+
+  @ManyToOne
+  private Curso curso;
 }

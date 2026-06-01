@@ -34,6 +34,13 @@
           <option value="direccion">Dirección</option>
         </select>
       </div>
+      <div>
+        <label for="cursoId">Curso</label>
+        <select id="cursoId" th:field="*{curso}">
+          <option value="">Selecciona un curso</option>
+          <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}"></option>
+        </select>
+      </div>
       <input type="hidden" th:field="*{academia.id}" />
     </div>
     <button class="btn bg-brand text-white" type="submit">Crear oferta</button>
