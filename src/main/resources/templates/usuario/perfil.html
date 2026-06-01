@@ -47,7 +47,8 @@
     </section>
     <section class="mt-5">
       <h1 class="mt-5 d-inline" style="line-height: 1rem;">Candidaturas Activas</h1>
-      <ul class="list-unstyled mt-2">
+      <span th:if="${#sets.size(ofertasAplicadas) == 0}" class="d-block ms-3 opacity-50">No has aplicado a ninguna oferta.</span>
+      <ul th:if="${#sets.size(ofertasAplicadas) > 0}" class="list-unstyled mt-2">
         <div th:if="${ofertasAplicadas}" th:each="oferta : ${ofertasAplicadas}">
           <li class="ms-3">
             <h5 style="line-height: 1rem;" th:text="${oferta.titulo}"></h5>
