@@ -45,5 +45,26 @@
     </div>
     <button class="btn bg-brand text-white" type="submit">Crear oferta</button>
   </form>
+  <script>
+    const tipoOferta = document.getElementById('tipoOferta');
+    const cursoId = document.getElementById('cursoId');
+
+    function actualizarCurso() {
+      if (tipoOferta.value == 'direccion') {
+        cursoId.value = '';
+        cursoId.disabled = true;
+        cursoId.required = false;
+      } else if (tipoOferta.value == 'alumno') {
+        cursoId.disabled = false;
+        cursoId.required = true;
+      } else {
+        cursoId.disabled = false;
+        cursoId.required = false;
+      }
+    }
+
+    tipoOferta.addEventListener('change', actualizarCurso);
+    actualizarCurso();
+  </script>
 </body>
 </html>

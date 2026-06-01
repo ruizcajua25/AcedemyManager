@@ -57,6 +57,7 @@ public class OfertaController {
   public String formularioEditarOferta(@RequestParam String id, Model model) {
     Oferta oferta = ofertaService.findById(id).orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
     model.addAttribute("oferta", oferta);
+    model.addAttribute("cursos", oferta.getAcademia().getCursos());
     return "ofertas/editar";
   }
 
