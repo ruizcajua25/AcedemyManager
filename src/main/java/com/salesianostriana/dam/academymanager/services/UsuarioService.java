@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.repositories.UsuarioRepository;
-import com.salesianostriana.dam.exceptions.UsernameRepetidoException;
+import com.salesianostriana.dam.academymanager.exceptions.UsernameRepetidoException;
 
 @Service
 public class UsuarioService extends BaseService<Usuario, String, UsuarioRepository> implements UserDetailsService {

@@ -16,7 +16,7 @@ import com.salesianostriana.dam.academymanager.services.UsuarioService;
 @Controller
 public class IndexController {
   @Autowired
-  private UsuarioService userService;
+  private UsuarioService usuarioService;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -42,7 +42,7 @@ public class IndexController {
   @PostMapping("/registro")
   public String procesarRegistro(@ModelAttribute("usuario") Usuario usuario) {
     usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-    userService.save(usuario);
+    usuarioService.save(usuario);
     return "redirect:/login";
   }
 }

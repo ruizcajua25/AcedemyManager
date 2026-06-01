@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.salesianostriana.dam.academymanager.exceptions.AccionNoPermitidaException;
+import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Director;
 import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
@@ -61,11 +63,11 @@ public class AcademiaController {
 
   @GetMapping("/academias/{id}/editar")
   public String editarFormulario(@PathVariable String id, Model model, @AuthenticationPrincipal Usuario usuario) {
-    Academia academia = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontro la academia con ID: " + id));
+    Academia academia = academiaService.findById(id).orElseThrow(() -> new ObjetoNoEncontradoException("No se encontro la academia con ID: " + id));
     boolean isDirector = academia.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
 
     if (!isDirector) {
-      throw new RuntimeException("No puedes editar esta academia");
+      throw new AccionNoPermitidaException("No puedes editar esta academia");
     }
 
     model.addAttribute("academia", academia);
@@ -74,11 +76,11 @@ public class AcademiaController {
 
   @PostMapping("/academias/{id}/editar")
   public String editar(@PathVariable String id, @ModelAttribute Academia academia, @AuthenticationPrincipal Usuario usuario) {
-    Academia academiaOriginal = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontro la academia con ID: " + id));
+    Academia academiaOriginal = academiaService.findById(id).orElseThrow(() -> new ObjetoNoEncontradoException("No se encontro la academia con ID: " + id));
     boolean isDirector = academiaOriginal.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
 
     if (!isDirector) {
-      throw new RuntimeException("No puedes editar esta academia");
+      throw new AccionNoPermitidaException("No puedes editar esta academia");
     }
 
     academiaOriginal.setNombre(academia.getNombre());
@@ -99,7 +101,7 @@ public class AcademiaController {
 
   @GetMapping("/academias/{id}")
   public String detalle(@PathVariable("id") String id, Model model, @AuthenticationPrincipal Usuario usuario) {
-    Academia academia = academiaService.findById(id).orElseThrow(() -> new RuntimeException("No se encontró la academia con ID: " + id));
+    Academia academia = academiaService.findById(id).orElseThrow(() -> new ObjetoNoEncontradoException("No se encontro la academia con ID: " + id));
     boolean isDirector = academia.getDirectores().stream().anyMatch(director -> director.getId().getUsuarioId().equals(usuario.getId()));
     model.addAttribute("director", isDirector);
     model.addAttribute("academia", academia);

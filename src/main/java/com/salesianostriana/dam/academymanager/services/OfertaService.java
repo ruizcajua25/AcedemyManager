@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
 import com.salesianostriana.dam.academymanager.modules.Curso;
@@ -48,7 +49,7 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
     Usuario candidato = oferta.getCandidatos().stream()
       .filter(c -> c.getId().equals(candidatoId))
       .findFirst()
-      .orElseThrow(() -> new RuntimeException("Candidato no encontrado"));
+      .orElseThrow(() -> new ObjetoNoEncontradoException("Candidato no encontrado"));
 
     oferta.getCandidatos().remove(candidato);
 
@@ -85,7 +86,7 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
     Usuario candidato = oferta.getCandidatos().stream()
       .filter(c -> c.getId().equals(candidatoId))
       .findFirst()
-      .orElseThrow(() -> new RuntimeException("Candidato no encontrado"));
+      .orElseThrow(() -> new ObjetoNoEncontradoException("Candidato no encontrado"));
 
     oferta.getCandidatos().remove(candidato);
   }
