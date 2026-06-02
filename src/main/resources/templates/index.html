@@ -8,23 +8,23 @@
   <title>Academy Manager</title>
 </head>
 <body class="min-vh-100 d-flex flex-column bg-brand-dark text-white">  
-  <div th:replace="~{fragments/navbar :: navbar}"></div>
-  <section class="row flex-grow-1 m-0">
-    <article class="col-6 d-flex flex-column justify-content-center align-items-center">
-      <div class="col-10 ps-5">
-        <h1 class="text-brand-light text-uppercase fw-semibold ps-4" style="font-size: 8rem; margin-left: -4rem;">
+  <div th:replace="~{fragments/navbar :: navbar-nofixed}"></div>
+  <section class="row flex-grow-1 m-0 pt-lg-0">
+    <article class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-center py-5">
+      <div class="col-11 col-lg-10 ps-lg-5">
+        <h1 class="text-brand-light text-uppercase fw-semibold ps-lg-4 display-1">
           Academy
-          <span class="d-block ps-5">manager</span>
+          <span class="d-block ps-lg-5">manager</span>
         </h1>
         <p class="lead">Tu pasión es enseñar, la nuestra es ayudarte a que tu academia brille. Gestionar tu centro de forma eficiente no es solo cuestión de orden, es la base para ofrecer una educación de calidad superior. Pasa de la gestión manual al nivel profesional que tus alumnos esperan.</p>
-        <div class="mt-5 d-flex gap-3">
+        <div class="mt-5 d-flex flex-column flex-sm-row gap-3">
           <a class="btn bg-brand-light text-dark" href="/academias/find">Buscar una academia</a>
           <a class="btn btn-outline-success border-brand-light text-white" href="/academia/create">Registrar una academia</a>
         </div>
       </div>
     </article>
-    <article class="col-6 d-flex justify-content-center align-items-center">
-      <img class="rounded h-75 col-10 object-fit-cover" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj14iSKLat_v3o4xRs9kv41noZTkDQG9t7rgkMYpA1ETb_sap7NytMarHt-i2SBRnuzme3khS2qyzVZL3BNaTocWB_KiWwn_Az1v1M1SgbuKbkwioPLGVkOu3z5AI9OxEV6QhOT_gnLKkY/s1600/Parlamento+de+Austria.jpg" alt="Foto de una academia">
+    <article class="col-12 col-lg-6 d-flex justify-content-center align-items-center pb-5 pb-lg-0">
+      <img class="rounded col-11 col-lg-10 object-fit-cover" style="max-height: 34rem;" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj14iSKLat_v3o4xRs9kv41noZTkDQG9t7rgkMYpA1ETb_sap7NytMarHt-i2SBRnuzme3khS2qyzVZL3BNaTocWB_KiWwn_Az1v1M1SgbuKbkwioPLGVkOu3z5AI9OxEV6QhOT_gnLKkY/s1600/Parlamento+de+Austria.jpg" alt="Foto de una academia">
     </article>
   </section>
 </body>

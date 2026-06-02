@@ -10,7 +10,7 @@
 <body class="bg-brand-dark text-white">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
   <header class="mt-3">
-    <nav class="navbar d-flex justify-content-center gap-4">
+    <nav class="navbar d-flex flex-column flex-sm-row justify-content-center gap-3 gap-sm-4">
       <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Información</a>
       <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Personas</a>
     </nav>

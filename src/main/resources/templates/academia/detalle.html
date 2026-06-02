@@ -9,8 +9,8 @@
 </head>
 <body class="bg-brand-dark text-white">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
-  <main class="p-5">
-    <div class="d-flex justify-content-between gap-4 align-items-start">
+  <main class="p-3 p-md-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-4 align-items-start">
       <div>
         <h1 th:text="${academia.nombre}">Nombre de la academia</h1>
         <p class="lead text-white-50 mb-0" th:if="${academia.descripcion}" th:text="${academia.descripcion}">Descripcion de la academia</p>
@@ -18,7 +18,7 @@
       <a class="btn text-white border" th:href="@{/academias/{id}/editar(id=${academia.id})}" th:if="${director}">Editar academia</a>
     </div>
     <section class="mt-5">
-      <div class="d-flex gap-5 align-items-center">
+      <div class="d-flex flex-column flex-sm-row gap-3 gap-md-5 align-items-sm-center">
         <h1 class="mb-0">Ofertas</h1>
         <a class="btn text-white border" th:href="@{/ofertas/crear?academiaId={id}(id=${academia.id})}" th:if="${director}">Crear oferta</a>
       </div>
@@ -29,7 +29,7 @@
       </ul>
       <div th:if="${alumno == null && director == null}">
         <span>No puedes ver las ofertas de esta academia. Solo los alumnos matriculados y el director pueden verlas.</span>
-        <div class="d-flex gap-5 align-items-center">
+        <div class="d-flex flex-column flex-sm-row gap-3 gap-md-5 align-items-sm-center">
           <h1 class="mb-0">Cursos Disponibles</h1>
         </div>
         <ul>
@@ -50,7 +50,7 @@
       </div>
 
       <div th:if="${director}">
-        <div class="d-flex gap-5 align-items-center">
+        <div class="d-flex flex-column flex-sm-row gap-3 gap-md-5 align-items-sm-center">
           <h1>Todo los cursos</h1>
           <a class="btn text-white border" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" th:if="${director}">Crear curso</a>
         </div>

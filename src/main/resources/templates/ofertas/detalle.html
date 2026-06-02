@@ -9,10 +9,10 @@
 </head>
 <body class="bg-brand-dark text-white">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
-  <main class="p-5">
-    <div class="d-flex justify-content-between mb-5">
+  <main class="p-3 p-md-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-4 mb-5">
       <div>
-        <h1 class="mb-2" style="line-height: 1rem;" th:text="${oferta.titulo}">Titulo de la oferta</h1>
+        <h1 class="mb-2" th:text="${oferta.titulo}">Titulo de la oferta</h1>
         <div>
           <a class="text-white opacity-50" th:href="@{/academias/{id}(id=${oferta.academia.id})}" th:text="${oferta.academia.nombre}">Academia</a>
         </div>
@@ -24,7 +24,7 @@
         <button th:if="${!aplicable}" class="d-block btn btn-outline-success border-brand-light text-white mt-3" disabled>Oferta no aplicable</button>
       </div>
       <div class="d-flex flex-column gap-1" th:if="${editable}">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex gap-2 justify-content-md-between">
           <a class="btn btn-outline-success border-brand-light text-white" th:href="@{/ofertas/editar(id=${oferta.id})}">Editar</a>
           <form action="" method="post" th:action="@{/ofertas/borrar(id=${oferta.id})}" style="display:inline;">
             <button id="boton-borrar" type="submit" class="btn btn-outline-danger border-danger text-white">Borrar</button>

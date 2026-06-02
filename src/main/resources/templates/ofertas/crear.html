@@ -13,30 +13,30 @@
     }
   </style>
 </head>
-<body class="d-grid bg-brand-extralight" style="place-content:center; height: 100vh;">
+<body class="d-grid bg-brand-extralight min-vh-100 py-4" style="place-content:center;">
   <form class="d-flex flex-column bg-white gap-3 container border p-4 rounded shadow-lg" action="#" th:action="@{/ofertas/crear}" th:object="${oferta}" method="POST">
-    <div class="d-flex gap-4">
-      <div>
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-xl-3">
         <label class="form-label" for="titulo">*Titulo</label>
         <input class="form-control" type="text" id="titulo" name="titulo" th:field="*{titulo}" placeholder="Oferta de alumnado" required>
       </div>
       
-      <div>
+      <div class="col-12 col-md-6 col-xl-3">
         <label class="form-label" for="descripcion">Descripción</label>
         <textarea class="form-control" type="text" id="descripcion" name="descripcion" th:field="*{descripcion}" maxlength="500" placeholder="Escribe aquí lo que quieras..."></textarea>
       </div>
       
-      <div>
+      <div class="col-12 col-md-6 col-xl-3">
         <label for="tipoOferta">Tipo de la oferta</label>
-        <select name="tipoOferta" th:field="*{tipoOferta}" id="tipoOferta">
+        <select class="form-select" name="tipoOferta" th:field="*{tipoOferta}" id="tipoOferta">
           <option value="profesor">Profesor</option>
           <option value="alumno">Alumno</option>
           <option value="direccion">Dirección</option>
         </select>
       </div>
-      <div>
+      <div class="col-12 col-md-6 col-xl-3">
         <label for="cursoId">Curso</label>
-        <select id="cursoId" th:field="*{curso}">
+        <select class="form-select" id="cursoId" th:field="*{curso}">
           <option value="">Selecciona un curso</option>
           <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}"></option>
         </select>
