@@ -14,8 +14,9 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) {
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/academia/create", "/academias/mi", "/academias/*/editar").authenticated()
-        .anyRequest().permitAll()        
+        .requestMatchers("/", "/login", "/register", "/academias/find", "/ofertas/buscar", "/styles/*")
+        .permitAll()
+        .anyRequest().authenticated()        
       )
       .formLogin(form -> form
         .loginPage("/login")
