@@ -3,63 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/styles/colors.css">
   <title>Mi Perfil</title>
 </head>
-<body>
-  <div class="border-bottom">
+<body class="bg-light">
+
+  <div class="border-bottom bg-white shadow-sm">
     <div th:replace="~{fragments/navbar :: navbar-black-nofixed}"></div>
   </div>
-  <main th:if="${usuario}" class="col-11 col-lg-9 bg-brand mx-auto mt-5 p-4 text-white rounded">
-    <header class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-start">
-      <h1 class="mb-4">
-        <span th:text="${usuario.nombre}"></span>
-        <span th:text="${usuario.apellidos}"></span>
-      </h1>
-      <a href="/academia/create" class="btn btn-light">Crear una academia</a>
-    </header>
-    <ul class="list-unstyled">
-      <li th:text="${usuario.email}"></li>
-    </ul>
-    <section class="mt-5">
-      <h1>Mis Academias</h1>
-      <ul class="list-unstyled">
-        <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}">
-          <li class="ms-3">
-            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
-            <span style="opacity: 0.5;">Director</span>
-          </li>
+
+  <main th:if="${usuario}" class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        
+        <div class="card bg-brand text-white shadow-lg border-0 rounded-4 overflow-hidden mb-4">
+          <div class="card-body p-4 p-md-5">
+            
+            <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 border-bottom border-white border-opacity-10 pb-4 mb-4">
+              <div>
+                <h1 class="display-5 fw-bold mb-2">
+                  <span th:text="${usuario.nombre}"></span> 
+                  <span th:text="${usuario.apellidos}"></span>
+                </h1>
+                <div class="text-white-50 d-flex align-items-center gap-2">
+                  <i class="bi bi-envelope-fill"></i>
+                  <span th:text="${usuario.email}"></span>
+                </div>
+              </div>
+              <div>
+                <a href="/academia/create" class="btn btn-light btn-lg fw-semibold shadow-sm px-4">
+                  <i class="bi bi-plus-circle-fill me-2"></i>Crear una academia
+                </a>
+              </div>
+            </header>
+
+            <section class="mb-5">
+              <h3 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+                <i class="bi bi-mortarboard-fill"></i> Mis Academias
+              </h3>
+              
+              <div class="row g-3">
+                
+                <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}" class="col-12 col-md-6 col-lg-4">
+                  <div class="card bg-white bg-opacity-10 border border-white border-opacity-20 text-white h-100 rounded-3 custom-card-hover">
+                    <div class="card-body d-flex flex-column justify-content-between p-3">
+                      <h5 class="card-title fw-semibold mb-3" th:text="${academia.nombre}"></h5>
+                      <span class="badge bg-success bg-opacity-75 text-white align-self-start px-2 py-1.5 fs-7">Director</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}" class="col-12 col-md-6 col-lg-4">
+                  <div class="card bg-white bg-opacity-10 border border-white border-opacity-20 text-white h-100 rounded-3 custom-card-hover">
+                    <div class="card-body d-flex flex-column justify-content-between p-3">
+                      <h5 class="card-title fw-semibold mb-3" th:text="${academia.nombre}"></h5>
+                      <span class="badge bg-info text-dark align-self-start px-2 py-1.5 fs-7">Alumno</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}" class="col-12 col-md-6 col-lg-4">
+                  <div class="card bg-white bg-opacity-10 border border-white border-opacity-20 text-white h-100 rounded-3 custom-card-hover">
+                    <div class="card-body d-flex flex-column justify-content-between p-3">
+                      <h5 class="card-title fw-semibold mb-3" th:text="${academia.nombre}"></h5>
+                      <span class="badge bg-warning text-dark align-self-start px-2 py-1.5 fs-7">Profesor</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            <section>
+              <h3 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+                <i class="bi bi-briefcase-fill"></i> Candidaturas Activas
+              </h3>
+              
+              <div th:if="${#sets.size(ofertasAplicadas) == 0}" class="text-white-50 p-4 border border-dashed border-white border-opacity-25 rounded-3 text-center">
+                <i class="bi bi-info-circle d-block fs-3 mb-2"></i>
+                <span>No has aplicado a ninguna oferta todavía.</span>
+              </div>
+
+              <div th:if="${#sets.size(ofertasAplicadas) > 0}" class="list-group list-group-flush rounded-3 overflow-hidden border border-white border-opacity-10">
+                <div th:each="oferta : ${ofertasAplicadas}" class="list-group-item bg-white bg-opacity-5 text-white border-bottom border-white border-opacity-10 p-3 d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="mb-1 fw-semibold fs-6" th:text="${oferta.titulo}"></h5>
+                    <span class="text-white-50 small d-flex align-items-center gap-1">
+                      <i class="bi bi-building fs-7"></i> <span th:text="${oferta.academia.nombre}"></span>
+                    </span>
+                  </div>
+                  <span class="badge rounded-pill bg-light text-dark fw-normal px-3 py-2">En proceso</span>
+                </div>
+              </div>
+            </section>
+
+          </div>
         </div>
-        <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}">
-          <li class="ms-3">
-            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
-            <span style="opacity: 0.5;">Alumno</span>
-          </li>
-        </div>
-        <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}">
-          <li class="ms-3">
-            <h5 style="line-height: 1rem;" th:text="${academia.nombre}"></h5>
-            <span style="opacity: 0.5;">Profesor</span>
-          </li>
-        </div>
-      </ul>
-    </section>
-    <section class="mt-5">
-      <h1 class="mt-5 d-inline" style="line-height: 1rem;">Candidaturas Activas</h1>
-      <span th:if="${#sets.size(ofertasAplicadas) == 0}" class="d-block ms-3 opacity-50">No has aplicado a ninguna oferta.</span>
-      <ul th:if="${#sets.size(ofertasAplicadas) > 0}" class="list-unstyled mt-2">
-        <div th:if="${ofertasAplicadas}" th:each="oferta : ${ofertasAplicadas}">
-          <li class="ms-3">
-            <h5 style="line-height: 1rem;" th:text="${oferta.titulo}"></h5>
-            <span style="opacity: 0.5;" th:text="${oferta.academia.nombre}"></span>
-          </li>
-        </div>
-      </ul>
-    </section>
+
+      </div>
+    </div>
   </main>
-  <main th:unless="${usuario}">
-    <p>Usuario no encontrado.</p>
+
+  <main th:unless="${usuario}" class="container my-5 text-center">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="alert alert-warning shadow-sm p-5 rounded-4" role="alert">
+          <i class="bi bi-exclamation-triangle-fill text-warning display-4 d-block mb-3"></i>
+          <h4 class="alert-heading fw-bold">¡Vaya!</h4>
+          <p class="mb-0">El usuario que estás buscando no ha sido encontrado o no está disponible.</p>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
