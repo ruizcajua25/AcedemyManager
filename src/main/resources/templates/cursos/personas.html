@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Personas de la clase</title>
+</head>
+<body class="bg-brand-dark">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+  <header class="mt-3 text-white">
+    <nav class="navbar d-flex flex-column flex-sm-row justify-content-center gap-3 gap-sm-4">
+      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Informacion</a>
+      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Personas</a>
+    </nav>
+  </header>
+  <main class="px-3 px-md-5 py-3 text-white">
+    <div>
+      <h3 class="text-brand-light">Profesores</h3>
+    </div>
+    <ul>
+      <span th:if="${#sets.size(profesores) == 0}">No hay profesores en este curso aun</span>
+      <div class="table-responsive" th:if="${#sets.size(profesores) > 0}">
+        <table class="table table-dark table-bordered">
+          <tr th:each="profesor : ${profesores}">
+            <td th:text="${profesor.usuario.nombre}"></td>
+            <td th:if="${editable}">
+              <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/profesores/{profesorId}/eliminar(academiaId=${curso.academia.id}, id=${curso.id}, profesorId=${profesor.usuario.id})}">
+                <button class="btn btn-danger">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </ul>
+    <a class="btn bg-brand text-white mb-5" th:if="${editable}" th:href="@{/academias/{academiaId}/cursos/{id}/profesores/add(academiaId=${curso.academia.id}, id=${curso.id})}">Anadir profesor</a>
+
+    <h3 class="text-brand-light">Alumnos</h3>
+    <ul>
+      <span th:if="${#sets.size(alumnos) == 0}">No hay alumnos en este curso aun</span>
+      <div class="table-responsive" th:if="${#sets.size(alumnos) > 0}">
+        <table class="table table-dark table-bordered">
+          <tr th:each="alumno : ${alumnos}">
+            <td th:text="${alumno.usuario.nombre}"></td>
+            <td th:if="${editable}">
+              <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/alumnos/{alumnoId}/eliminar(academiaId=${curso.academia.id}, id=${curso.id}, alumnoId=${alumno.usuario.id})}">
+                <button class="btn btn-danger">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </ul>
+    <a class="btn bg-brand text-white" th:if="${editable}" th:href="@{/academias/{academiaId}/cursos/{id}/alumnos/add(academiaId=${curso.academia.id}, id=${curso.id})}">Anadir alumno</a>
+  </main>
+</body>
+</html>

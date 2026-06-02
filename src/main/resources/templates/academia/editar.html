@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Editar academia</title>
+</head>
+<body class="bg-brand-dark">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+  <main class="container py-5">
+    <form class="d-flex flex-column bg-white gap-3 border p-4 rounded shadow-lg text-dark" action="#" th:action="@{/academias/{id}/editar(id=${academia.id})}" th:object="${academia}" method="post">
+      <h1 class="text-brand mb-3">Editar academia</h1>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="nombre">Nombre de la academia:</label>
+          <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" required>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="email">Correo electronico:</label>
+          <input class="form-control" type="email" id="email" name="email" th:field="*{email}">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="descripcion">Descripcion:</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4" maxlength="500"></textarea>
+        </div>
+
+        <div class="col-12 col-md-8">
+          <label class="form-label" for="direccion">Direccion:</label>
+          <input class="form-control" type="text" id="direccion" name="direccion" th:field="*{direccion}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="telefono">Telefono:</label>
+          <input class="form-control" type="text" id="telefono" name="telefono" th:field="*{telefono}">
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 mt-3">
+        <button class="btn bg-brand text-white" type="submit">Editar academia</button>
+        <a class="btn btn-secondary" th:href="@{/academias/{id}(id=${academia.id})}">Volver</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

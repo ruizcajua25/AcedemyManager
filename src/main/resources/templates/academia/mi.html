@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Mis Academias</title>
+  <style>
+    .academy-card {
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .academy-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, .18) !important;
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-white min-vh-100">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+
+  <main class="container py-5">
+    <header class="d-flex flex-column flex-md-row justify-content-between gap-4 align-items-md-end mb-5">
+      <div>
+        <span class="text-brand-light fw-semibold text-uppercase">Panel personal</span>
+        <h1 class="display-5 fw-bold mb-2">Mis Academias</h1>
+        <p class="lead mb-0 text-white-50">Accede rapidamente a las academias donde participas.</p>
+      </div>
+      <a class="btn bg-brand-light text-dark fw-semibold px-4" href="/academia/create">Crear academia</a>
+    </header>
+
+    <section th:with="total=${(academias.get('director') != null ? #lists.size(academias.get('director')) : 0) + (academias.get('profesor') != null ? #lists.size(academias.get('profesor')) : 0) + (academias.get('alumno') != null ? #lists.size(academias.get('alumno')) : 0)}">
+      <div th:if="${total == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
+        <h2 class="h3 fw-bold mb-3">Todavia no tienes academias</h2>
+        <p class="text-secondary mb-4">Cuando formes parte de una academia, aparecera aqui.</p>
+        <a class="btn bg-brand text-white px-4" href="/academias/find">Buscar academia</a>
+      </div>
+
+      <div th:if="${total > 0}" class="row g-4">
+        <div class="col-12" th:if="${academias.get('director')}">
+          <h2 class="h4 fw-bold mb-3">Como director</h2>
+          <div class="row g-4">
+            <div class="col-12 col-md-6 col-xl-4" th:each="academia : ${academias.get('director')}">
+              <a class="text-decoration-none" th:href="@{/academias/{id}(id=${academia.id})}">
+                <article class="academy-card bg-white text-dark rounded shadow-sm p-4 h-100">
+                  <div class="d-flex justify-content-between gap-3 align-items-start mb-3">
+                    <h3 class="h5 fw-bold mb-0 text-truncate" th:text="${academia.nombre}">Academia</h3>
+                    <span class="badge bg-brand text-white">Director</span>
+                  </div>
+                  <p class="mb-3 text-secondary" th:text="${academia.direccion}">Direccion</p>
+                  <ul class="list-unstyled d-flex justify-content-between border-top pt-3 mb-0 small text-secondary">
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.alumnos)}">0</strong> alumnos</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.profesores)}">0</strong> profesores</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.cursos)}">0</strong> cursos</li>
+                  </ul>
+                </article>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12" th:if="${academias.get('profesor')}">
+          <h2 class="h4 fw-bold mb-3 mt-3">Como profesor</h2>
+          <div class="row g-4">
+            <div class="col-12 col-md-6 col-xl-4" th:each="academia : ${academias.get('profesor')}">
+              <a class="text-decoration-none" th:href="@{/academias/{id}(id=${academia.id})}">
+                <article class="academy-card bg-white text-dark rounded shadow-sm p-4 h-100">
+                  <div class="d-flex justify-content-between gap-3 align-items-start mb-3">
+                    <h3 class="h5 fw-bold mb-0 text-truncate" th:text="${academia.nombre}">Academia</h3>
+                    <span class="badge bg-brand-light text-dark">Profesor</span>
+                  </div>
+                  <p class="mb-3 text-secondary" th:text="${academia.email}">Email</p>
+                  <ul class="list-unstyled d-flex justify-content-between border-top pt-3 mb-0 small text-secondary">
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.alumnos)}">0</strong> alumnos</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.profesores)}">0</strong> profesores</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.cursos)}">0</strong> cursos</li>
+                  </ul>
+                </article>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12" th:if="${academias.get('alumno')}">
+          <h2 class="h4 fw-bold mb-3 mt-3">Como alumno</h2>
+          <div class="row g-4">
+            <div class="col-12 col-md-6 col-xl-4" th:each="academia : ${academias.get('alumno')}">
+              <a class="text-decoration-none" th:href="@{/academias/{id}(id=${academia.id})}">
+                <article class="academy-card bg-white text-dark rounded shadow-sm p-4 h-100">
+                  <div class="d-flex justify-content-between gap-3 align-items-start mb-3">
+                    <h3 class="h5 fw-bold mb-0 text-truncate" th:text="${academia.nombre}">Academia</h3>
+                    <span class="badge bg-brand-extralight text-dark">Alumno</span>
+                  </div>
+                  <p class="mb-3 text-secondary" th:text="${academia.telefono}">Telefono</p>
+                  <ul class="list-unstyled d-flex justify-content-between border-top pt-3 mb-0 small text-secondary">
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.alumnos)}">0</strong> alumnos</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.profesores)}">0</strong> profesores</li>
+                    <li><strong class="text-dark" th:text="${#sets.size(academia.cursos)}">0</strong> cursos</li>
+                  </ul>
+                </article>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

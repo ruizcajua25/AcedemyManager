@@ -1,28 +1,86 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <title>Document</title>
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Crear academia</title>
+  
+  <style>
+    /* --- CSS ULTRA SIMPLIFICADO --- */
+    
+    /* Si el usuario escribe algo mal, el borde se vuelve rojo */
+    .form-control:user-invalid {
+      border-color: #dc3545;
+    }
+
+    /* Si el usuario escribe algo mal, mostramos el texto de error de Bootstrap */
+    .form-control:user-invalid ~ .invalid-feedback {
+      display: block;
+    }
+  </style>
 </head>
-<body>
-  <div class="container">
-    <h1 class="text-center">Crea tu academia</h1>
-    <form class="d-flex flex-column gap-4" action="#" >
-      <div>
-      <label class="form-label" for="nombre">Nombre de la academia:</label>
-      <input class="form-control" type="text" id="nombre" name="nombre">
-      </div>
-      <div>
-        <label class="form-label" for="direccion">Dirección:</label>
-        <input class="form-control" type="text" id="direccion" name="direccion">
-      </div>
-      <div>
-        <label class="form-label" for="telefono">Teléfono:</label>
-        <input class="form-control" type="text" id="telefono" name="telefono">
-      </div>
-    </form>
-  </div>
+<body class="bg-brand-dark min-vh-100">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+  <main class="container py-5">
+    <div class="container-sm border p-4 rounded bg-white shadow-lg" style="max-width: 45rem;">
+      <h1 class="text-center mb-5 text-brand display-2">Crea tu academia</h1>
+      
+      <form class="d-flex flex-column gap-4" action="#" th:action="@{/academia/create}" th:object="${academia}" method="post">
+        
+        <div>
+          <label class="form-label" for="nombre">Nombre de la academia:</label>
+          <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" 
+                 required 
+                 minlength="3" 
+                 maxlength="100"
+                 pattern=".*\S.*" 
+                 placeholder="Ej. Academia Turing">
+          <div class="invalid-feedback">El nombre es obligatorio (mínimo 3 caracteres y sin espacios vacíos).</div>
+        </div>
+
+        <div>
+          <label class="form-label" for="descripcion">Descripción:</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" 
+                    rows="4" 
+                    minlength="10" 
+                    maxlength="500" 
+                    placeholder="Escribe una breve descripción sobre la academia..."></textarea>
+          <div class="invalid-feedback">Si añades una descripción, debe tener al menos 10 caracteres.</div>
+        </div>
+
+        <div>
+          <label class="form-label" for="direccion">Dirección:</label>
+          <input class="form-control" type="text" id="direccion" name="direccion" th:field="*{direccion}" 
+                 required 
+                 minlength="5" 
+                 maxlength="150" 
+                 placeholder="Ej. Calle Mayor, 12, Planta 1">
+          <div class="invalid-feedback">Por favor, introduce una dirección válida (mínimo 5 caracteres).</div>
+        </div>
+
+        <div>
+          <label class="form-label" for="telefono">Teléfono:</label>
+          <input class="form-control" type="tel" id="telefono" name="telefono" th:field="*{telefono}" 
+                 required
+                 pattern="^([+]*[0-9]{1,4})*[\s\./0-9_-]{9,15}$" 
+                 placeholder="Ej. 600123456">
+          <div class="invalid-feedback">Introduce un número de teléfono válido (9 a 15 dígitos).</div>
+        </div>
+
+        <div>
+          <label class="form-label" for="email">Correo electrónico:</label>
+          <input class="form-control" type="email" id="email" name="email" th:field="*{email}" 
+                 required 
+                 pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
+                 placeholder="ejemplo@academia.com">
+          <div class="invalid-feedback">Por favor, introduce un correo electrónico válido.</div>
+        </div>
+
+        <button class="btn bg-brand text-white" type="submit">Crear academia</button>
+      </form>
+    </div>
+  </main>
 </body>
 </html>

@@ -1,11 +1,8 @@
 package com.salesianostriana.dam.academymanager.modules;
 
-import java.util.List;
-
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
@@ -14,13 +11,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Table(name = "directores")
 @Entity
-@Table(name = "profesores")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Profesor {
+public class Director {
   @EmbeddedId
   private TipoUsuarioId id;
 
@@ -33,7 +30,4 @@ public class Profesor {
   @MapsId("usuarioId")
   @JoinColumn(name = "usuario_id")
   private Usuario usuario;
-
-  @ManyToMany(mappedBy = "profesores")
-  private List<Curso> cursos;
 }

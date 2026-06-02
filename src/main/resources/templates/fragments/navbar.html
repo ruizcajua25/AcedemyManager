@@ -1,0 +1,121 @@
+<th:block xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="navbar">
+  <style>
+    .nav-link:hover{
+      text-decoration: underline;
+    }
+  </style>
+  <header class="container-fluid fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark gap-4 p-4 text-white">
+      <a class="nav-link" href="/">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav mx-auto gap-lg-5">
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/find">Buscar academia</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/mi">Mis Academias</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/ofertas/buscar">Ofertas</a>
+          </li>
+        </ul>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 gap-lg-5" sec:authorize="isAnonymous()">
+          <a class="nav-link" href="/login">Iniciar sesión</a>
+          <a class="nav-link" href="/registro">Registrarse</a>
+        </div>
+        <div class="d-flex flex-column flex-lg-row gap-3 gap-lg-4 align-items-lg-center" sec:authorize="isAuthenticated()">
+          <form action="#" th:action="@{/logout}" method="post">
+            <button class="nav-link" type="submit">Cerrar sesión</button>
+          </form>
+          <a class="rounded border p-1 text-white text-decoration-none" href="/perfil">Perfil</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+<th:block xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="navbar-nofixed">
+  <style>
+    .nav-link:hover{
+      text-decoration: underline;
+    }
+  </style>
+
+  <header class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark gap-4 p-4 text-white">
+      <a class="nav-link" href="/">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenuNoFixed" aria-controls="navbarMenuNoFixed" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMenuNoFixed">
+        <ul class="navbar-nav mx-auto gap-lg-5">
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/find">Buscar academia</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/mi">Mis Academias</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/ofertas/buscar">Ofertas</a>
+          </li>
+        </ul>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 gap-lg-5" sec:authorize="isAnonymous()">
+          <a class="nav-link" href="/login">Iniciar sesión</a>
+          <a class="nav-link" href="/registro">Registrarse</a>
+        </div>
+        <div class="d-flex flex-column flex-lg-row gap-3 gap-lg-4 align-items-lg-center" sec:authorize="isAuthenticated()">
+          <form action="#" th:action="@{/logout}" method="post">
+            <button class="nav-link" type="submit">Cerrar sesión</button>
+          </form>
+          <a class="rounded border p-1 text-white text-decoration-none" href="/perfil">Perfil</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+<th:block xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="navbar-black-nofixed">
+  <style>
+    .nav-link:hover{
+      text-decoration: underline;
+    }
+  </style>
+
+  <header class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light gap-4 p-4 text-black">
+      <a class="nav-link" href="/">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBlackMenuNoFixed" aria-controls="navbarBlackMenuNoFixed" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarBlackMenuNoFixed">
+        <ul class="navbar-nav mx-auto gap-lg-5">
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/find">Buscar academia</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/academias/mi">Mis Academias</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/ofertas/buscar">Ofertas</a>
+          </li>
+        </ul>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 gap-lg-5" sec:authorize="isAnonymous()">
+          <a class="nav-link" href="/login">Iniciar sesión</a>
+          <a class="nav-link" href="/registro">Registrarse</a>
+        </div>
+        <div class="d-flex flex-column flex-lg-row gap-3 gap-lg-4 align-items-lg-center" sec:authorize="isAuthenticated()">
+          <form action="#" th:action="@{/logout}" method="post">
+            <button class="nav-link" type="submit">Cerrar sesión</button>
+          </form>
+          <a class="rounded border p-1 text-black text-decoration-none" href="/perfil">Perfil</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>

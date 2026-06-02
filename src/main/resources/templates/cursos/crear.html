@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Crear curso</title>
+  <style>
+    input::placeholder,
+    textarea::placeholder {
+      color: #aaa !important;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-brand-dark">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+  <main class="container py-5">
+    <form class="d-flex flex-column bg-white gap-3 border p-4 rounded shadow-lg text-dark" action="#" th:action="@{/academias/{academiaId}/cursos/crear(academiaId=${curso.academia.id})}" th:object="${curso}" method="POST">
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="nombre">*Nombre</label>
+          <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" placeholder="Curso de Java" required>
+        </div>
+
+        <div class="col-12 col-md-8">
+          <label class="form-label" for="descripcion">Descripcion</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4" maxlength="500" placeholder="Escribe aqui la descripcion del curso..."></textarea>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="fechaInicio">Fecha de inicio</label>
+          <input class="form-control" type="date" id="fechaInicio" name="fechaInicio" th:field="*{fechaInicio}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="fechaFin">Fecha de final</label>
+          <input class="form-control" type="date" id="fechaFin" name="fechaFin" th:field="*{fechaFin}">
+        </div>
+      </div>
+
+      <input type="hidden" th:field="*{academia.id}">
+      
+      <button class="btn bg-brand text-white align-self-start" type="submit">Crear curso</button>
+    </form>
+  </main>
+</body>
+</html>
