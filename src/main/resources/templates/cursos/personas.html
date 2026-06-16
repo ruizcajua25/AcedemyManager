@@ -54,5 +54,7 @@
     </ul>
     <a class="btn bg-brand text-white" th:if="${editable}" th:href="@{/academias/{academiaId}/cursos/{id}/alumnos/add(academiaId=${curso.academia.id}, id=${curso.id})}">Anadir alumno</a>
   </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
 </body>
 </html>

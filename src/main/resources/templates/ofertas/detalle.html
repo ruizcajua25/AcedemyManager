@@ -37,12 +37,18 @@
     </div>
     <p th:text="${oferta.descripcion}">Descripción de la oferta...</p>
   </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
+
   <script>
-    document.getElementById('boton-borrar').addEventListener('click', function(event) {
-      if (!confirm('¿Estás seguro de que quieres borrar esta oferta?')) {
+    const botonBorrar = document.getElementById('boton-borrar');
+    if (botonBorrar) {
+      botonBorrar.addEventListener('click', function(event) {
+        if (!confirm('Estas seguro de que quieres borrar esta oferta?')) {
         event.preventDefault();
       }
     });
+    }
   </script>
 </body>
 </html>
