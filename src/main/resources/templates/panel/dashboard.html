@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Mi Panel</title>
+</head>
+<body class="bg-brand-dark text-white d-flex flex-column min-vh-100">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+
+  <main class="container py-5 flex-grow-1">
+    <header class="mb-5">
+      <h1 class="display-5 fw-bold mb-2">Mi Panel</h1>
+      <p class="lead text-white-50 mb-0">Gestiona tus academias, cursos y ofertas desde aqui</p>
+    </header>
+
+    <section th:if="${totalAcademias == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
+      <i class="bi bi-info-circle display-1 text-secondary mb-3"></i>
+      <h2 class="h3 fw-bold mb-3">No eres director de ninguna academia</h2>
+      <p class="text-secondary mb-4">Crea una academia para empezar a gestionar cursos y ofertas.</p>
+      <a class="btn bg-brand text-white px-4" href="/academia/create">Crear academia</a>
+    </section>
+
+    <section th:if="${totalAcademias > 0}" class="row g-4">
+      <div class="col-12">
+        <h2 class="h3 fw-semibold mb-4">Acciones rapidas</h2>
+        <div class="d-flex flex-wrap gap-3">
+          <button type="button" class="btn bg-brand-light text-dark px-4 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#crearModal">
+            <i class="bi bi-plus-circle me-2"></i>Crear
+          </button>
+          <a class="btn btn-outline-light px-4 py-2" href="/panel/academias">
+            <i class="bi bi-building me-2"></i>Academias <span class="badge bg-brand-light text-dark ms-1" th:text="${totalAcademias}">0</span>
+          </a>
+          <a class="btn btn-outline-light px-4 py-2" href="/panel/cursos">
+            <i class="bi bi-book me-2"></i>Cursos <span class="badge bg-brand-light text-dark ms-1" th:text="${totalCursos}">0</span>
+          </a>
+          <a class="btn btn-outline-light px-4 py-2" href="/panel/ofertas">
+            <i class="bi bi-briefcase me-2"></i>Ofertas <span class="badge bg-brand-light text-dark ms-1" th:text="${totalOfertas}">0</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-brand-dark text-white border border-secondary border-opacity-25">
+          <div class="modal-header border-secondary border-opacity-25">
+            <h5 class="modal-title text-brand-light" id="crearModalLabel">Que quieres crear?</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div id="paso1" class="d-grid gap-3">
+              <button type="button" class="btn bg-brand-light text-dark py-3 fw-semibold" onclick="mostrarPaso2('academia')">
+                <i class="bi bi-building me-2"></i>Academia
+              </button>
+              <button type="button" class="btn bg-brand-light text-dark py-3 fw-semibold" onclick="mostrarPaso2('curso')">
+                <i class="bi bi-book me-2"></i>Curso
+              </button>
+              <button type="button" class="btn bg-brand-light text-dark py-3 fw-semibold" onclick="mostrarPaso2('oferta')">
+                <i class="bi bi-briefcase me-2"></i>Oferta
+              </button>
+            </div>
+            <div id="paso2" class="d-none">
+              <p class="text-white-50 mb-3">Selecciona la academia:</p>
+              <div class="d-grid gap-2" id="listaAcademias">
+              </div>
+              <button type="button" class="btn btn-outline-light mt-3 w-100" onclick="volverPaso1()">
+                <i class="bi bi-arrow-left me-2"></i>Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const academias = [[${academiasDirector}]];
+      let tipoSeleccionado = '';
+
+      function mostrarPaso2(tipo) {
+        tipoSeleccionado = tipo;
+        
+        if (tipo === 'academia') {
+          window.location.href = '/academia/create';
+          return;
+        }
+
+        document.getElementById('paso1').classList.add('d-none');
+        document.getElementById('paso2').classList.remove('d-none');
+        
+        const lista = document.getElementById('listaAcademias');
+        lista.innerHTML = '';
+        
+        academias.forEach(academia => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn btn-outline-light text-start py-2';
+          btn.innerHTML = '<i class="bi bi-building me-2"></i>' + academia.nombre;
+          btn.onclick = () => {
+            if (tipoSeleccionado === 'curso') {
+              window.location.href = '/academias/' + academia.id + '/cursos/crear';
+            } else if (tipoSeleccionado === 'oferta') {
+              window.location.href = '/ofertas/crear?academiaId=' + academia.id;
+            }
+          };
+          lista.appendChild(btn);
+        });
+      }
+
+      function volverPaso1() {
+        document.getElementById('paso1').classList.remove('d-none');
+        document.getElementById('paso2').classList.add('d-none');
+      }
+    </script>
+  </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
+</body>
+</html>
