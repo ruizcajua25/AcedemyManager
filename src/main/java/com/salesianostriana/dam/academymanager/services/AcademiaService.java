@@ -3,6 +3,7 @@ package com.salesianostriana.dam.academymanager.services;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,24 @@ public class AcademiaService extends BaseService<Academia, String, AcademiaRepos
       academias.get("profesor").add(p.getAcademia());
     });
     return academias;
+  }
+
+  public int totalUsuariosEnAcademia(Academia academia) {
+    int alumnos = academia.getAlumnos() != null ? academia.getAlumnos().size() : 0;
+    int profesores = academia.getProfesores() != null ? academia.getProfesores().size() : 0;
+    int directores = academia.getDirectores() != null ? academia.getDirectores().size() : 0;
+    return alumnos + profesores + directores;
+  }
+
+  public Map<String, Integer> resumenUsuariosEnAcademia(Academia academia) {
+    Map<String, Integer> resumen = new HashMap<>();
+    int alumnos = academia.getAlumnos() != null ? academia.getAlumnos().size() : 0;
+    int profesores = academia.getProfesores() != null ? academia.getProfesores().size() : 0;
+    int directores = academia.getDirectores() != null ? academia.getDirectores().size() : 0;
+    resumen.put("alumnos", alumnos);
+    resumen.put("profesores", profesores);
+    resumen.put("directores", directores);
+    resumen.put("total", alumnos + profesores + directores);
+    return resumen;
   }
 }

@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.academymanager.services;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,5 +99,17 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
     }
 
     return oferta.isActiva() && oferta.getCurso().getFechaInicio().isAfter(LocalDate.now());
+  }
+
+  public int totalCandidatosEnOferta(Oferta oferta) {
+    return oferta.getCandidatos() != null ? oferta.getCandidatos().size() : 0;
+  }
+
+  public Map<String, Integer> resumenCandidatosEnOferta(Oferta oferta) {
+    Map<String, Integer> resumen = new HashMap<>();
+    int candidatos = oferta.getCandidatos() != null ? oferta.getCandidatos().size() : 0;
+    resumen.put("candidatos", candidatos);
+    resumen.put("total", candidatos);
+    return resumen;
   }
 }
