@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.academymanager.controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,12 +41,18 @@ public class PanelController {
 
     List<Curso> cursosActivos = new ArrayList<>();
     List<Oferta> ofertasAbiertas = new ArrayList<>();
+    List<Oferta> ofertasConCandidatos = new ArrayList<>();
+    List<Curso> cursosSinProfesores = new ArrayList<>();
+    List<Oferta> ofertasSinCandidatos = new ArrayList<>();
     int totalCandidatos = 0;
 
     for (Academia academia : academiasDirector) {
       for (Curso curso : academia.getCursos()) {
         if (cursoService.esCursoActivo(curso)) {
           cursosActivos.add(curso);
+        }
+        if (curso.getProfesores() == null || curso.getProfesores().isEmpty()) {
+          cursosSinProfesores.add(curso);
         }
       }
 
@@ -54,6 +61,12 @@ public class PanelController {
         if (ofertaService.esOfertaAplicable(oferta)) {
           ofertasAbiertas.add(oferta);
           totalCandidatos += oferta.getCandidatos().size();
+          if (oferta.getCandidatos() != null && !oferta.getCandidatos().isEmpty()) {
+            ofertasConCandidatos.add(oferta);
+          }
+          if (oferta.getCandidatos() == null || oferta.getCandidatos().isEmpty()) {
+            ofertasSinCandidatos.add(oferta);
+          }
         }
       }
     }
@@ -63,6 +76,10 @@ public class PanelController {
     model.addAttribute("totalCursos", cursosActivos.size());
     model.addAttribute("totalOfertas", ofertasAbiertas.size());
     model.addAttribute("totalCandidatos", totalCandidatos);
+    model.addAttribute("cursosActivos", cursosActivos);
+    model.addAttribute("ofertasConCandidatos", ofertasConCandidatos);
+    model.addAttribute("cursosSinProfesores", cursosSinProfesores);
+    model.addAttribute("ofertasSinCandidatos", ofertasSinCandidatos);
 
     List<Map<String, String>> academiasSimple = new ArrayList<>();
     for (Academia a : academiasDirector) {
