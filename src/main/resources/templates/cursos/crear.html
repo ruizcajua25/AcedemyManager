@@ -12,38 +12,68 @@
       color: #aaa !important;
       opacity: 1;
     }
+    .form-control:user-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+    }
+    .form-control:user-invalid ~ .invalid-feedback {
+      display: block;
+    }
   </style>
 </head>
-<body class="bg-brand-dark">
+<body class="bg-brand-dark text-white d-flex flex-column min-vh-100">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
-  <main class="container py-5">
-    <form class="d-flex flex-column bg-white gap-3 border p-4 rounded shadow-lg text-dark" action="#" th:action="@{/academias/{academiaId}/cursos/crear(academiaId=${curso.academia.id})}" th:object="${curso}" method="POST">
-      <div class="row g-4">
-        <div class="col-12 col-md-4">
-          <label class="form-label" for="nombre">*Nombre</label>
-          <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" placeholder="Curso de Java" required>
-        </div>
 
-        <div class="col-12 col-md-8">
-          <label class="form-label" for="descripcion">Descripcion</label>
-          <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" rows="4" maxlength="500" placeholder="Escribe aqui la descripcion del curso..."></textarea>
-        </div>
+  <main class="container flex-grow-1 d-flex align-items-center py-5">
+    <div class="row w-100 justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
+        <div class="row align-items-center">
+          <div class="col-12 col-md-5 mb-4 mb-md-0">
+            <h1 class="text-brand-light text-uppercase fw-semibold display-4">
+              Crea tu
+              <span class="d-block">curso</span>
+            </h1>
+            <p class="lead text-white-50 mt-3">Añade un nuevo curso a tu academia.</p>
+          </div>
+          <div class="col-12 col-md-7">
+            <form class="d-flex flex-column bg-white gap-3 p-4 rounded shadow-lg text-dark" action="#" th:action="@{/academias/{academiaId}/cursos/crear(academiaId=${curso.academia.id})}" th:object="${curso}" method="POST">
+              
+              <div>
+                <label class="form-label small fw-semibold" for="nombre">*Nombre del curso</label>
+                <input class="form-control" type="text" id="nombre" name="nombre" th:field="*{nombre}" 
+                       required minlength="3" maxlength="100"
+                       placeholder="Ej. Curso de Java" >
+                <div class="invalid-feedback">El nombre es obligatorio (minimo 3 caracteres).</div>
+              </div>
 
-        <div class="col-12 col-md-4">
-          <label class="form-label" for="fechaInicio">Fecha de inicio</label>
-          <input class="form-control" type="date" id="fechaInicio" name="fechaInicio" th:field="*{fechaInicio}">
-        </div>
+              <div>
+                <label class="form-label small fw-semibold" for="descripcion">Descripcion</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" 
+                          rows="3" maxlength="500" 
+                          placeholder="Escribe aqui la descripcion del curso..."></textarea>
+              </div>
 
-        <div class="col-12 col-md-4">
-          <label class="form-label" for="fechaFin">Fecha de final</label>
-          <input class="form-control" type="date" id="fechaFin" name="fechaFin" th:field="*{fechaFin}">
+              <div class="row g-3">
+                <div class="col-12 col-sm-6">
+                  <label class="form-label small fw-semibold" for="fechaInicio">Fecha de inicio</label>
+                  <input class="form-control" type="date" id="fechaInicio" name="fechaInicio" th:field="*{fechaInicio}">
+                </div>
+                <div class="col-12 col-sm-6">
+                  <label class="form-label small fw-semibold" for="fechaFin">Fecha de fin</label>
+                  <input class="form-control" type="date" id="fechaFin" name="fechaFin" th:field="*{fechaFin}">
+                </div>
+              </div>
+
+              <input type="hidden" th:field="*{academia.id}">
+              
+              <button class="btn bg-brand text-white fw-semibold mt-2" type="submit">Crear curso</button>
+            </form>
+          </div>
         </div>
       </div>
-
-      <input type="hidden" th:field="*{academia.id}">
-      
-      <button class="btn bg-brand text-white align-self-start" type="submit">Crear curso</button>
-    </form>
+    </div>
   </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
 </body>
 </html>

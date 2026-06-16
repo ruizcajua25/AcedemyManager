@@ -4,46 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/styles/colors.css">
   <title th:text="${curso.nombre}">Curso</title>
+  <style>
+    .tab-link {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-link:hover {
+      color: white;
+    }
+    .tab-link.active {
+      color: white;
+      border-bottom-color: var(--brand-color-light);
+    }
+  </style>
 </head>
-<body class="bg-brand-dark text-white">
+<body class="bg-brand-dark text-white d-flex flex-column min-vh-100">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
-  <header class="mt-3">
-    <nav class="navbar d-flex flex-column flex-sm-row justify-content-center gap-3 gap-sm-4">
-      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Información</a>
-      <a class="nav-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Personas</a>
-    </nav>
+
+  <header class="border-bottom border-secondary border-opacity-25">
+    <div class="container">
+      <nav class="d-flex gap-2">
+        <a class="tab-link active" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">
+          <i class="bi bi-info-circle"></i> Informacion
+        </a>
+        <a class="tab-link" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">
+          <i class="bi bi-people"></i> Personas
+        </a>
+      </nav>
+    </div>
   </header>
-  <main class="px-5 py-2">
+
+  <main class="container py-5 flex-grow-1">
     <div class="d-flex flex-column flex-md-row justify-content-between gap-4 mb-5">
       <div>
-        <h1 class="mb-2" th:text="${curso.nombre}">Nombre del curso</h1>
-        <div>
-          <a class="text-white opacity-50" th:href="@{/academias/{id}(id=${curso.academia.id})}" th:text="${curso.academia.nombre}">Academia</a>
-        </div>
+        <a class="text-brand-light text-decoration-none small" th:href="@{/academias/{id}(id=${curso.academia.id})}">
+          <i class="bi bi-arrow-left"></i> <span th:text="${curso.academia.nombre}">Academia</span>
+        </a>
+        <h1 class="display-5 fw-bold mb-2" th:text="${curso.nombre}">Nombre del curso</h1>
       </div>
 
-      <div class="d-flex flex-column gap-2" th:if="${editable}">
-        <div class="d-flex gap-2 justify-content-md-end">
-          <a class="btn btn-outline-success border-brand-light text-white" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">Editar</a>
-          <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/borrar(academiaId=${curso.academia.id}, id=${curso.id})}" style="display:inline;">
-            <button id="boton-borrar" type="submit" class="btn btn-outline-danger border-danger text-white">Borrar</button>
+      <div class="d-flex flex-column gap-2 align-self-start" th:if="${editable}">
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-light btn-sm" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">Editar</a>
+          <form action="#" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/borrar(academiaId=${curso.academia.id}, id=${curso.id})}">
+            <button id="boton-borrar" type="submit" class="btn btn-outline-danger btn-sm">Borrar</button>
           </form>
         </div>
       </div>
     </div>
 
-    <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}">
-      <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
-      -
-      <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+    <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-4">
+      <span class="badge bg-brand-light text-dark">
+        <i class="bi bi-calendar3"></i>
+        <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
+        -
+        <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+      </span>
     </div>
-    <section class="mb-5">
-      <h2 class="h4">Descripcion</h2>
-      <p class="lead" th:text="${curso.descripcion}">Descripcion del curso...</p>
-    </section>
 
+    <section class="mb-5">
+      <h2 class="h4 fw-semibold mb-3">Descripcion</h2>
+      <div th:if="${curso.descripcion}" class="p-4 rounded border border-secondary border-opacity-25" style="background-color: rgba(255,255,255,0.05);">
+        <p class="lead mb-0" th:text="${curso.descripcion}">Descripcion del curso...</p>
+      </div>
+      <p th:unless="${curso.descripcion}" class="text-white-50">Este curso no tiene descripcion.</p>
+    </section>
   </main>
 
   <div th:replace="~{fragments/footer :: pie}"></div>
