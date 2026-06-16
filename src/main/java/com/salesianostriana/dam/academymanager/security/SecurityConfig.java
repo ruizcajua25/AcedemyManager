@@ -14,12 +14,13 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) {
     http.authorizeHttpRequests(auth -> auth
-        .requestMatchers("/", "/login", "/register", "/academias/find", "/ofertas/buscar", "/styles/*")
+        .requestMatchers("/", "/login", "/registro", "/academias/find", "/ofertas/buscar", "/styles/*")
         .permitAll()
         .anyRequest().authenticated()        
       )
       .formLogin(form -> form
         .loginPage("/login")
+        .failureUrl("/login?error")
         .defaultSuccessUrl("/")
         .permitAll()
       )
