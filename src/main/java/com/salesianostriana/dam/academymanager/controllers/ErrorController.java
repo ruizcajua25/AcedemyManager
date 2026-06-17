@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.salesianostriana.dam.academymanager.exceptions.AccionNoPermitidaException;
+import com.salesianostriana.dam.academymanager.exceptions.CupoAlcanzadoException;
+import com.salesianostriana.dam.academymanager.exceptions.CupoNoPermitidoException;
 import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
 import com.salesianostriana.dam.academymanager.exceptions.UsernameRepetidoException;
 
@@ -72,6 +74,26 @@ public class ErrorController {
     response.setStatus(HttpStatus.BAD_REQUEST.value());
     model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
     model.addAttribute("titulo", "No se ha podido guardar");
+    model.addAttribute("mensaje", ex.getMessage());
+
+    return "error";
+  }
+
+  @ExceptionHandler(CupoAlcanzadoException.class)
+  public String cupoAlcanzado(CupoAlcanzadoException ex, Model model, HttpServletResponse response) {
+    response.setStatus(HttpStatus.BAD_REQUEST.value());
+    model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+    model.addAttribute("titulo", "Cupo completo");
+    model.addAttribute("mensaje", ex.getMessage());
+
+    return "error";
+  }
+
+  @ExceptionHandler(CupoNoPermitidoException.class)
+  public String cupoNoPermitido(CupoNoPermitidoException ex, Model model, HttpServletResponse response) {
+    response.setStatus(HttpStatus.BAD_REQUEST.value());
+    model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+    model.addAttribute("titulo", "Cupo no permitido");
     model.addAttribute("mensaje", ex.getMessage());
 
     return "error";
