@@ -177,6 +177,28 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
       .sum();
   }
 
+  public double calcularTasaDeRespuestaOfertas(Academia academia) {
+    List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
+    if (activas.isEmpty()) {
+      return 0.0;
+    }
+    long conCandidatos = activas.stream()
+      .filter(o -> o.getCandidatos() != null && !o.getCandidatos().isEmpty())
+      .count();
+    return (double) conCandidatos / activas.size();
+  }
+
+  public double calcularInteresMedioPorOferta(Academia academia) {
+    List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
+    if (activas.isEmpty()) {
+      return 0.0;
+    }
+    return activas.stream()
+      .mapToInt(o -> o.getCandidatos() != null ? o.getCandidatos().size() : 0)
+      .average()
+      .orElse(0.0);
+  }
+
   public Oferta editarOferta(String ofertaId, String titulo, String descripcion, TipoOferta tipoOferta, String cursoId) {
     Oferta oferta = findByIdOrThrow(ofertaId);
     oferta.setTitulo(titulo);
