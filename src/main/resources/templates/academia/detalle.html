@@ -96,6 +96,13 @@
       <div class="row g-4 align-items-center">
         <div class="col-md-8">
           <h1 class="display-5 fw-bold mb-3" th:text="${academia.nombre}">Nombre de la academia</h1>
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <div th:replace="~{fragments/valoracion :: estrellas(${valoracion})}"></div>
+            <span th:if="${posicionTop != null}" class="badge bg-brand text-white">
+              <i class="bi bi-trophy-fill me-1"></i>
+              <span th:text="'Top ' + ${posicionTop} + ' de la aplicación'">Top 1 de la aplicacion</span>
+            </span>
+          </div>
           <p class="lead text-white-50 mb-0" th:if="${academia.descripcion}" th:text="${academia.descripcion}">Descripcion de la academia</p>
         </div>
         <div class="col-md-4">

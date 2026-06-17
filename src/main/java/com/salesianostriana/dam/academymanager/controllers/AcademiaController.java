@@ -1,5 +1,8 @@
 package com.salesianostriana.dam.academymanager.controllers;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -68,7 +71,13 @@ public class AcademiaController {
 
   @GetMapping("/academias/find")
   public String formulario(Model model) {
-    model.addAttribute("academias", academiaService.findAll());
+    List<Academia> academias = academiaService.findAllOrdenadasPorValoracion();
+    Map<String, Double> valoraciones = academiaService.calcularValoraciones(academias);
+    Map<String, Integer> topPosiciones = academiaService.calcularTopPosiciones();
+
+    model.addAttribute("academias", academias);
+    model.addAttribute("valoraciones", valoraciones);
+    model.addAttribute("topPosiciones", topPosiciones);
     return "academia/find";
   }
 
@@ -78,6 +87,8 @@ public class AcademiaController {
     boolean isDirector = academiaService.esDirector(id, usuario.getId());
     model.addAttribute("director", isDirector);
     model.addAttribute("academia", academia);
+    model.addAttribute("valoracion", academiaService.calcularValoracion(academia));
+    model.addAttribute("posicionTop", academiaService.calcularPosicionTop(academia));
     model.addAttribute("ofertasActivas", ofertaService.findOfertasActivasByAcademia(id));
     model.addAttribute("cursosActivos", cursoService.findCursosActivosByAcademia(id));
     model.addAttribute("alumno", alumnoService.findByUsuarioIdAndAcademiaId(id, usuario.getId()));
