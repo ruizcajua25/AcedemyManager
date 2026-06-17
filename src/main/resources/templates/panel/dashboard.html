@@ -162,6 +162,29 @@
           </div>
         </div>
       </div>
+
+      <div class="mt-5">
+        <h2 class="h4 fw-semibold mb-3">
+          <i class="bi bi-send-fill text-brand-light me-2"></i>Mis candidaturas
+        </h2>
+
+        <div th:if="${#sets.size(ofertasAplicadas) == 0}" class="stat-card rounded-3 p-4 text-center">
+          <i class="bi bi-inbox fs-1 text-white-50 mb-2"></i>
+          <p class="text-white-50 mb-0">No has aplicado a ninguna oferta todavia.</p>
+        </div>
+
+        <div class="row g-3" th:if="${#sets.size(ofertasAplicadas) > 0}">
+          <div class="col-12 col-md-6" th:each="oferta : ${ofertasAplicadas}">
+            <a th:href="@{/ofertas/{id}(id=${oferta.id})}" class="text-decoration-none">
+              <div class="stat-card rounded-3 p-3 h-100">
+                <h5 class="fw-semibold mb-1" th:text="${oferta.titulo}">Titulo oferta</h5>
+                <p class="text-brand-light small mb-2" th:text="${oferta.academia.nombre}">Academia</p>
+                <span class="badge bg-brand-light text-dark">En proceso</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
     <div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
