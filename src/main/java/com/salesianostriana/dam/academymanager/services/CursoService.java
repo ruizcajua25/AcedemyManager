@@ -54,6 +54,7 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     return resumen;
   }
 
+  // Cuenta los alumnos distintos que estan matriculados en cursos actualmente activos de la academia.
   public int contarAlumnosUnicosEnCursosActivos(Academia academia) {
     return findCursosActivosByAcademia(academia.getId()).stream()
       .flatMap(curso -> curso.getAlumnos() != null ? curso.getAlumnos().stream() : java.util.stream.Stream.empty())
@@ -62,6 +63,7 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
       .size();
   }
 
+  // Calcula la media de alumnos por profesor entre los cursos activos de la academia.
   public double calcularRatioAlumnosPorProfesorEnCursosActivos(Academia academia) {
     List<Curso> activos = findCursosActivosByAcademia(academia.getId());
     if (activos.isEmpty()) {
@@ -77,6 +79,7 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
       .orElse(0.0);
   }
 
+  // Calcula la duracion media en dias de los cursos activos de la academia.
   public double calcularDuracionMediaCursosActivos(Academia academia) {
     List<Curso> activos = findCursosActivosByAcademia(academia.getId());
     return activos.stream()

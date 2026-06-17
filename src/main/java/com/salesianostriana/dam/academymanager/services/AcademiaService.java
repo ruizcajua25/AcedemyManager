@@ -96,6 +96,7 @@ public class AcademiaService extends BaseService<Academia, String, AcademiaRepos
       .orElseThrow(() -> new com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException("No se encontro la academia con ID: " + academiaId));
   }
 
+  // Calcula la valoracion de una academia en una escala de 0.00 a 5.00 combinando usuarios, cursos activos y ofertas.
   public double calcularValoracion(Academia academia) {
     double totalUsuarios = totalUsuariosEnAcademia(academia);
     double alumnosUnicosActivos = cursoService.contarAlumnosUnicosEnCursosActivos(academia);
@@ -118,6 +119,7 @@ public class AcademiaService extends BaseService<Academia, String, AcademiaRepos
     return Math.round(Math.min(5.0, valoracion) * 100.0) / 100.0;
   }
 
+  // Calcula las valoraciones de una lista de academias devolviendo un mapa id -> puntuacion.
   public Map<String, Double> calcularValoraciones(List<Academia> academias) {
     Map<String, Double> valoraciones = new HashMap<>();
     for (Academia academia : academias) {
@@ -126,12 +128,14 @@ public class AcademiaService extends BaseService<Academia, String, AcademiaRepos
     return valoraciones;
   }
 
+  // Devuelve todas las academias ordenadas de mayor a menor valoracion.
   public List<Academia> findAllOrdenadasPorValoracion() {
     return findAll().stream()
       .sorted(Comparator.comparingDouble(this::calcularValoracion).reversed())
       .toList();
   }
 
+  // Devuelve la posicion del top 3 de la academia (1, 2 o 3) o null si no esta entre las 3 mejores.
   public Integer calcularPosicionTop(Academia academia) {
     List<Academia> academiasOrdenadas = findAll().stream()
       .sorted(Comparator.comparingDouble(this::calcularValoracion).reversed())
@@ -145,6 +149,7 @@ public class AcademiaService extends BaseService<Academia, String, AcademiaRepos
     return null;
   }
 
+  // Devuelve un mapa con los ids de las 3 mejores academias y su posicion (1, 2 o 3).
   public Map<String, Integer> calcularTopPosiciones() {
     List<Academia> academiasOrdenadas = findAll().stream()
       .sorted(Comparator.comparingDouble(this::calcularValoracion).reversed())

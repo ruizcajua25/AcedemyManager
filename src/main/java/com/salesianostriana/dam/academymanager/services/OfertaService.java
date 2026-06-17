@@ -177,6 +177,7 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
       .sum();
   }
 
+  // Calcula la proporcion de ofertas activas de la academia que tienen al menos un candidato (0.0 a 1.0).
   public double calcularTasaDeRespuestaOfertas(Academia academia) {
     List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
     if (activas.isEmpty()) {
@@ -188,6 +189,7 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
     return (double) conCandidatos / activas.size();
   }
 
+  // Calcula el numero medio de candidatos por oferta activa de la academia.
   public double calcularInteresMedioPorOferta(Academia academia) {
     List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
     if (activas.isEmpty()) {
