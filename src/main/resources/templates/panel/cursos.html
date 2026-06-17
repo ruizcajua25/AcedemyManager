@@ -74,6 +74,9 @@
             <a class="btn btn-sm btn-outline-light flex-grow-1" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">
               <i class="bi bi-eye me-1"></i>Ver
             </a>
+            <a class="btn btn-sm btn-outline-light px-2 py-1 small" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}" title="Ver personas">
+              <i class="bi bi-people"></i>
+            </a>
             <a class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">
               <i class="bi bi-pencil"></i>
             </a>
