@@ -12,18 +12,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
+import com.salesianostriana.dam.academymanager.services.AlumnoService;
 import com.salesianostriana.dam.academymanager.services.CursoService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
 
 
 @Controller
 public class AcademiaController {
+  private final AlumnoService alumnoService;
   @Autowired
   private AcademiaService academiaService;
   @Autowired
   private CursoService cursoService;
   @Autowired
-  private OfertaService ofertaService; 
+  private OfertaService ofertaService;
+
+
+  AcademiaController(AlumnoService alumnoService) {
+    this.alumnoService = alumnoService;
+  } 
 
 
   @GetMapping("/academia/create")
@@ -73,7 +80,7 @@ public class AcademiaController {
     model.addAttribute("academia", academia);
     model.addAttribute("ofertasActivas", ofertaService.findOfertasActivasByAcademia(id));
     model.addAttribute("cursosActivos", cursoService.findCursosActivosByAcademia(id));
-    model.addAttribute("alumno", academia.getAlumnos().stream().filter(a -> a.getUsuario().getId().equals(usuario.getId())).findFirst().orElse(null));
+    model.addAttribute("alumno", alumnoService.findByUsuarioIdAndAcademiaId(id, usuario.getId()));
     model.addAttribute("cursos", academia.getCursos());
     return "academia/detalle";
   }
