@@ -1,19 +1,31 @@
 package com.salesianostriana.dam.academymanager.services;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
 import com.salesianostriana.dam.academymanager.modules.Curso;
+import com.salesianostriana.dam.academymanager.modules.Profesor;
+import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
+import com.salesianostriana.dam.academymanager.repositories.AlumnoRepository;
 import com.salesianostriana.dam.academymanager.repositories.CursoRepository;
+import com.salesianostriana.dam.academymanager.repositories.ProfesorRepository;
 
 @Service
 public class CursoService extends BaseService<Curso, String, CursoRepository> {
+  @Autowired
+  private ProfesorRepository profesorRepository;
+  @Autowired
+  private AlumnoRepository alumnoRepository;
+
   public void eliminarAlumno (Curso curso, String alumnoId) {
     Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
     alumnos.removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
@@ -24,7 +36,6 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     if(curso.getFechaInicio() == null) {
       return true;
     }
-
     return curso.getFechaInicio().isBefore(LocalDate.now()) && curso.getFechaFin().isAfter(LocalDate.now());
   }
 
@@ -35,12 +46,96 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
   }
 
   public Map<String, Integer> resumenUsuariosEnCurso(Curso curso) {
-    Map<String, Integer> resumen = new HashMap<>();
+    Map<String, Integer> resumen = new java.util.HashMap<>();
     int alumnos = curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
     int profesores = curso.getProfesores() != null ? curso.getProfesores().size() : 0;
     resumen.put("alumnos", alumnos);
     resumen.put("profesores", profesores);
     resumen.put("total", alumnos + profesores);
     return resumen;
+  }
+
+  public List<Curso> findCursosActivosByAcademia(String academiaId) {
+    LocalDate now = LocalDate.now();
+    return repository.findByAcademiaIdAndFechaInicioBeforeAndFechaFinAfter(academiaId, now, now);
+  }
+
+  public List<Curso> findByAcademia(String academiaId) {
+    return repository.findByAcademiaId(academiaId);
+  }
+
+  public List<Curso> findCursosSinProfesoresByAcademia(String academiaId) {
+    return repository.findByAcademiaIdAndProfesoresIsEmpty(academiaId);
+  }
+
+  public List<Curso> findByAcademiaOrderByNombre(String academiaId) {
+    return repository.findByAcademiaIdOrderByNombre(academiaId);
+  }
+
+  public boolean esDirectorDeCurso(String cursoId, String usuarioId) {
+    Curso curso = findById(cursoId).orElseThrow(() -> new ObjetoNoEncontradoException("Curso no encontrado"));
+    return curso.getAcademia().getDirectores().stream()
+      .anyMatch(d -> d.getUsuario().getId().equals(usuarioId));
+  }
+
+  public Curso findByIdOrThrow(String cursoId) {
+    return findById(cursoId).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+  }
+
+  public void addProfesoresToCurso(Curso curso, List<String> profesorIds, String academiaId) {
+    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
+    if (profesorIds != null) {
+      for (String pid : profesorIds) {
+        profesores.add(
+          profesorRepository.findById(TipoUsuarioId.builder()
+            .academiaId(academiaId)
+            .usuarioId(pid)
+            .build()).orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado"))
+        );
+      }
+    }
+    curso.setProfesores(profesores);
+  }
+
+  public void addAlumnosToCurso(Curso curso, List<String> alumnoIds, String academiaId) {
+    Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
+    if (alumnoIds != null) {
+      for (String aid : alumnoIds) {
+        alumnos.add(
+          alumnoRepository.findById(TipoUsuarioId.builder()
+            .academiaId(academiaId)
+            .usuarioId(aid)
+            .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"))
+        );
+      }
+    }
+    curso.setAlumnos(alumnos);
+  }
+
+  public void removeProfesorFromCurso(Curso curso, String profesorId) {
+    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
+    profesores.removeIf(p -> p.getUsuario().getId().equals(profesorId));
+    curso.setProfesores(profesores);
+  }
+
+  public List<Profesor> findProfesoresDisponibles(Curso curso) {
+    return curso.getAcademia().getProfesores().stream()
+      .filter(profesor -> curso.getProfesores().stream().noneMatch(p -> p.getId().equals(profesor.getId())))
+      .toList();
+  }
+
+  public List<Alumno> findAlumnosDisponibles(Curso curso) {
+    return curso.getAcademia().getAlumnos().stream()
+      .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
+      .toList();
+  }
+
+  public Curso editarCurso(String cursoId, String nombre, String descripcion, LocalDate fechaInicio, LocalDate fechaFin) {
+    Curso curso = findByIdOrThrow(cursoId);
+    curso.setNombre(nombre);
+    curso.setDescripcion(descripcion);
+    curso.setFechaInicio(fechaInicio);
+    curso.setFechaFin(fechaFin);
+    return save(curso);
   }
 }
