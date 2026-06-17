@@ -38,6 +38,7 @@ public class CursoController {
     Curso curso = cursoService.findByIdOrThrow(id);
     model.addAttribute("curso", curso);
     model.addAttribute("editable", academiaService.esDirector(academiaId, usuario.getId()));
+    model.addAttribute("plazasDisponibles", cursoService.plazasDisponibles(curso));
     return "cursos/detalle";
   }
   
@@ -51,6 +52,7 @@ public class CursoController {
     model.addAttribute("editable", academiaService.esDirector(academiaId, usuario.getId()));
     model.addAttribute("profesoresDisponibles", cursoService.findProfesoresDisponibles(curso));
     model.addAttribute("alumnosDisponibles", cursoService.findAlumnosDisponibles(curso));
+    model.addAttribute("plazasDisponibles", cursoService.plazasDisponibles(curso));
 
     return "cursos/personas";
   }
@@ -79,6 +81,7 @@ public class CursoController {
 
     model.addAttribute("curso", curso);
     model.addAttribute("alumnosDisponibles", cursoService.findAlumnosDisponibles(curso));
+    model.addAttribute("plazasDisponibles", cursoService.plazasDisponibles(curso));
 
     return "cursos/add-alumnos";
   }
@@ -110,7 +113,7 @@ public class CursoController {
 
   @PostMapping("/{id}/editar")
   public String editarCursoAPI(@PathVariable String id, @PathVariable String academiaId, @ModelAttribute Curso curso) {
-    cursoService.editarCurso(id, curso.getNombre(), curso.getDescripcion(), curso.getFechaInicio(), curso.getFechaFin());
+    cursoService.editarCurso(id, curso.getNombre(), curso.getDescripcion(), curso.getFechaInicio(), curso.getFechaFin(), curso.getCupoMaximo());
     return "redirect:/academias/{academiaId}/cursos/" + id;
   }
 
