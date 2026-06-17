@@ -59,12 +59,21 @@
       </div>
     </div>
 
-    <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-4">
-      <span class="badge bg-brand-light text-dark">
+    <div class="mb-4 d-flex flex-wrap gap-2">
+      <span th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="badge bg-brand-light text-dark">
         <i class="bi bi-calendar3"></i>
         <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
         -
         <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+      </span>
+      <span class="badge bg-info text-dark">
+        <i class="bi bi-people-fill"></i>
+        <span th:text="${#sets.size(curso.alumnos)}">0</span>
+        /
+        <span th:text="${curso.cupoMaximo != null} ? ${curso.cupoMaximo} : '∞'">∞</span>
+        alumnos
+        <span th:if="${plazasDisponibles > 0 and plazasDisponibles < 2147483647}" th:text="'(' + ${plazasDisponibles} + ' libres)'">(0 libres)</span>
+        <span th:if="${plazasDisponibles == 0}">(completo)</span>
       </span>
     </div>
 

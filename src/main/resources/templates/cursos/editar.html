@@ -64,6 +64,13 @@
                 </div>
               </div>
 
+              <div>
+                <label class="form-label small fw-semibold" for="cupoMaximo">Cupo maximo</label>
+                <input class="form-control" type="number" id="cupoMaximo" name="cupoMaximo" th:field="*{cupoMaximo}"
+                       min="1" placeholder="Dejalo vacio si no hay limite">
+                <div class="form-text text-secondary">Numero maximo de alumnos. Dejalo vacio para no limitar.</div>
+              </div>
+
               <div class="d-flex gap-2 mt-2">
                 <button class="btn bg-brand text-white fw-semibold" type="submit">Guardar cambios</button>
                 <a class="btn btn-outline-secondary" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">Cancelar</a>
