@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesianostriana.dam.academymanager.exceptions.CupoAlcanzadoException;
+import com.salesianostriana.dam.academymanager.exceptions.CupoNoPermitidoException;
 import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
 import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
@@ -52,6 +54,24 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     resumen.put("profesores", profesores);
     resumen.put("total", alumnos + profesores);
     return resumen;
+  }
+
+  public int contarAlumnos(Curso curso) {
+    return curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
+  }
+
+  public int plazasDisponibles(Curso curso) {
+    if (curso.getCupoMaximo() == null) {
+      return Integer.MAX_VALUE;
+    }
+    return curso.getCupoMaximo() - contarAlumnos(curso);
+  }
+
+  public boolean tieneCupoDisponible(Curso curso, int solicitantes) {
+    if (curso.getCupoMaximo() == null) {
+      return true;
+    }
+    return contarAlumnos(curso) + solicitantes <= curso.getCupoMaximo();
   }
 
   // Cuenta los alumnos distintos que estan matriculados en cursos actualmente activos de la academia.
@@ -130,15 +150,19 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
   }
 
   public void addAlumnosToCurso(Curso curso, List<String> alumnoIds, String academiaId) {
-    if (alumnoIds != null) {
-      for (String aid : alumnoIds) {
-        curso.getAlumnos().add(
-          alumnoRepository.findById(TipoUsuarioId.builder()
-            .academiaId(academiaId)
-            .usuarioId(aid)
-            .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"))
-        );
-      }
+    if (alumnoIds == null || alumnoIds.isEmpty()) {
+      return;
+    }
+    if (!tieneCupoDisponible(curso, alumnoIds.size())) {
+      throw new CupoAlcanzadoException("No hay plazas suficientes. Solo quedan " + plazasDisponibles(curso) + " plazas disponibles.");
+    }
+    for (String aid : alumnoIds) {
+      curso.getAlumnos().add(
+        alumnoRepository.findById(TipoUsuarioId.builder()
+          .academiaId(academiaId)
+          .usuarioId(aid)
+          .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"))
+      );
     }
   }
 
@@ -158,12 +182,16 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
       .toList();
   }
 
-  public Curso editarCurso(String cursoId, String nombre, String descripcion, LocalDate fechaInicio, LocalDate fechaFin) {
+  public Curso editarCurso(String cursoId, String nombre, String descripcion, LocalDate fechaInicio, LocalDate fechaFin, Integer cupoMaximo) {
     Curso curso = findByIdOrThrow(cursoId);
+    if (cupoMaximo != null && cupoMaximo < contarAlumnos(curso)) {
+      throw new CupoNoPermitidoException("No puedes reducir el cupo por debajo del numero de alumnos matriculados (" + contarAlumnos(curso) + ").");
+    }
     curso.setNombre(nombre);
     curso.setDescripcion(descripcion);
     curso.setFechaInicio(fechaInicio);
     curso.setFechaFin(fechaFin);
+    curso.setCupoMaximo(cupoMaximo);
     return save(curso);
   }
 }
