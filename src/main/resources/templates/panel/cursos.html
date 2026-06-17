@@ -70,12 +70,12 @@
             </li>
           </ul>
 
-          <div class="mb-3">
-            <span class="badge" th:classappend="${curso.cupoMaximo != null and #sets.size(curso.alumnos) >= curso.cupoMaximo} ? 'bg-danger' : 'bg-info text-dark'">
+          <div th:if="${curso.cupoMaximo != null}" class="mb-3">
+            <span class="badge" th:classappend="${#sets.size(curso.alumnos) >= curso.cupoMaximo} ? 'bg-danger' : 'bg-info text-dark'">
               <i class="bi bi-people-fill me-1"></i>
               <span th:text="${#sets.size(curso.alumnos)}">0</span>
               /
-              <span th:text="${curso.cupoMaximo != null} ? ${curso.cupoMaximo} : '∞'">∞</span>
+              <span th:text="${curso.cupoMaximo}">0</span>
               alumnos
             </span>
           </div>

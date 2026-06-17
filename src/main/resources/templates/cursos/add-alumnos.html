@@ -25,40 +25,40 @@
           <div class="col-12 col-md-7">
             <form id="formAlumnos" class="d-flex flex-column bg-white gap-3 p-4 rounded shadow-lg text-dark" method="post" th:action="@{/academias/{academiaId}/cursos/{id}/alumnos/add(academiaId=${curso.academia.id}, id=${curso.id})}">
 
-              <div class="alert alert-info mb-0">
+              <div th:if="${curso.cupoMaximo != null}" class="alert alert-info mb-0">
                 <i class="bi bi-info-circle me-2"></i>
                 Plazas disponibles:
-                <strong th:text="${plazasDisponibles < 2147483647} ? ${plazasDisponibles} : 'Sin limite'">0</strong>
+                <strong th:text="${plazasDisponibles}">0</strong>
               </div>
 
               <div th:if="${#lists.size(alumnosDisponibles) == 0}" class="alert alert-secondary mb-0">
                 <i class="bi bi-info-circle me-2"></i>No hay alumnos disponibles para añadir
               </div>
 
-              <div th:if="${plazasDisponibles == 0}" class="alert alert-warning mb-0">
+              <div th:if="${curso.cupoMaximo != null and plazasDisponibles == 0}" class="alert alert-warning mb-0">
                 <i class="bi bi-exclamation-triangle me-2"></i>El curso ha alcanzado su cupo maximo.
               </div>
 
               <div class="form-check p-3 rounded border" th:each="alumno : ${alumnosDisponibles}">
-                <input class="form-check-input alumno-checkbox" type="checkbox" name="alumnoId" th:id="${alumno.usuario.id}" th:value="${alumno.usuario.id}" th:disabled="${plazasDisponibles == 0}">
+                <input class="form-check-input alumno-checkbox" type="checkbox" name="alumnoId" th:id="${alumno.usuario.id}" th:value="${alumno.usuario.id}" th:disabled="${curso.cupoMaximo != null and plazasDisponibles == 0}">
                 <label class="form-check-label fw-semibold" th:for="${alumno.usuario.id}" th:text="${alumno.usuario.nombre}"></label>
               </div>
 
-              <div id="cupoMensaje" class="alert alert-warning d-none mb-0">
+              <div th:if="${curso.cupoMaximo != null}" id="cupoMensaje" class="alert alert-warning d-none mb-0">
                 <i class="bi bi-exclamation-triangle me-2"></i>Has seleccionado mas alumnos que plazas disponibles.
               </div>
 
-              <div class="d-flex gap-2 mt-2" th:if="${#lists.size(alumnosDisponibles) > 0 and plazasDisponibles > 0}">
+              <div class="d-flex gap-2 mt-2" th:if="${#lists.size(alumnosDisponibles) > 0 and (curso.cupoMaximo == null or plazasDisponibles > 0)}">
                 <button id="btnAnadir" class="btn bg-brand text-white fw-semibold" type="submit">Anadir alumnos</button>
                 <a class="btn btn-outline-secondary" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Cancelar</a>
               </div>
-              <div th:if="${#lists.size(alumnosDisponibles) == 0 or plazasDisponibles == 0}">
+              <div th:if="${#lists.size(alumnosDisponibles) == 0 or (curso.cupoMaximo != null and plazasDisponibles == 0)}">
                 <a class="btn btn-outline-secondary" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}">Volver</a>
               </div>
             </form>
-            <script th:inline="javascript">
+            <script th:inline="javascript" th:if="${curso.cupoMaximo != null}">
               /*<![CDATA[*/
-              const plazasDisponibles = [[${plazasDisponibles < 2147483647} ? ${plazasDisponibles} : 999999]];
+              const plazasDisponibles = [[${plazasDisponibles}]];
               const checkboxes = document.querySelectorAll('.alumno-checkbox');
               const cupoMensaje = document.getElementById('cupoMensaje');
               const btnAnadir = document.getElementById('btnAnadir');

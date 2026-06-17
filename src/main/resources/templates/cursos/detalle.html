@@ -66,13 +66,13 @@
         -
         <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
       </span>
-      <span class="badge bg-info text-dark">
+      <span th:if="${curso.cupoMaximo != null}" class="badge bg-info text-dark">
         <i class="bi bi-people-fill"></i>
         <span th:text="${#sets.size(curso.alumnos)}">0</span>
         /
-        <span th:text="${curso.cupoMaximo != null} ? ${curso.cupoMaximo} : '∞'">∞</span>
+        <span th:text="${curso.cupoMaximo}">0</span>
         alumnos
-        <span th:if="${plazasDisponibles > 0 and plazasDisponibles < 2147483647}" th:text="'(' + ${plazasDisponibles} + ' libres)'">(0 libres)</span>
+        <span th:if="${plazasDisponibles > 0}" th:text="'(' + ${plazasDisponibles} + ' libres)'">(0 libres)</span>
         <span th:if="${plazasDisponibles == 0}">(completo)</span>
       </span>
     </div>
