@@ -1,11 +1,9 @@
 package com.salesianostriana.dam.academymanager.services;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +24,8 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
   @Autowired
   private AlumnoRepository alumnoRepository;
 
-  public void eliminarAlumno (Curso curso, String alumnoId) {
-    Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
-    alumnos.removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
-    curso.setAlumnos(alumnos);
+  public void eliminarAlumno(Curso curso, String alumnoId) {
+    curso.getAlumnos().removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
   }
 
   public boolean esCursoActivo (Curso curso) {
@@ -83,10 +79,9 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
   }
 
   public void addProfesoresToCurso(Curso curso, List<String> profesorIds, String academiaId) {
-    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
     if (profesorIds != null) {
       for (String pid : profesorIds) {
-        profesores.add(
+        curso.getProfesores().add(
           profesorRepository.findById(TipoUsuarioId.builder()
             .academiaId(academiaId)
             .usuarioId(pid)
@@ -94,14 +89,12 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
         );
       }
     }
-    curso.setProfesores(profesores);
   }
 
   public void addAlumnosToCurso(Curso curso, List<String> alumnoIds, String academiaId) {
-    Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
     if (alumnoIds != null) {
       for (String aid : alumnoIds) {
-        alumnos.add(
+        curso.getAlumnos().add(
           alumnoRepository.findById(TipoUsuarioId.builder()
             .academiaId(academiaId)
             .usuarioId(aid)
@@ -109,13 +102,10 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
         );
       }
     }
-    curso.setAlumnos(alumnos);
   }
 
   public void removeProfesorFromCurso(Curso curso, String profesorId) {
-    Set<Profesor> profesores = new HashSet<>(curso.getProfesores());
-    profesores.removeIf(p -> p.getUsuario().getId().equals(profesorId));
-    curso.setProfesores(profesores);
+    curso.getProfesores().removeIf(p -> p.getUsuario().getId().equals(profesorId));
   }
 
   public List<Profesor> findProfesoresDisponibles(Curso curso) {

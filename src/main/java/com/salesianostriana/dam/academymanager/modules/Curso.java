@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.academymanager.modules;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -12,18 +13,25 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "cursos")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Builder
 public class Curso {
   @Id
   @GeneratedValue
+  @EqualsAndHashCode.Include
   private String id;
 
   private String nombre;
@@ -33,13 +41,16 @@ public class Curso {
   private LocalDate fechaFin;
 
   @ManyToOne
+  @ToString.Exclude
   private Academia academia;
 
   @ManyToMany
   @Builder.Default
-  private Set<Alumno> alumnos = Set.of();
+  @ToString.Exclude
+  private Set<Alumno> alumnos = new HashSet<>();
 
   @ManyToMany
   @Builder.Default
-  private Set<Profesor> profesores = Set.of();
+  @ToString.Exclude
+  private Set<Profesor> profesores = new HashSet<>();
 }
