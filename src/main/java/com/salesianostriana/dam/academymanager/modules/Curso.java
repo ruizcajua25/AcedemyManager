@@ -39,6 +39,7 @@ public class Curso {
   private String descripcion;
   private LocalDate fechaInicio;
   private LocalDate fechaFin;
+  private Integer cupoMaximo;
 
   @ManyToOne
   @ToString.Exclude
