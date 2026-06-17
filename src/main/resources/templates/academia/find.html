@@ -62,7 +62,7 @@
     <section th:if="${#lists.size(academias) > 0}" class="row g-4">
       <div class="academia col-12 col-md-6 col-xl-4" th:each="academia : ${academias}">
         <a class="text-decoration-none" th:href="@{/academias/{id}(id=${academia.id})}">
-          <article class="academia-card bg-white text-dark rounded shadow-sm p-4 h-100 position-relative" th:classappend="${topAcademias.contains(academia.id)} ? 'academia-card-top'">
+          <article class="academia-card bg-white text-dark rounded shadow-sm p-4 h-100 position-relative" th:classappend="${topPosiciones.containsKey(academia.id)} ? 'academia-card-top'">
             <span th:if="${topPosiciones.containsKey(academia.id)}" class="position-absolute top-0 end-0 mt-2 me-2 badge bg-brand text-white">
               <i class="bi bi-trophy-fill me-1"></i>
               <span th:text="'Top ' + ${topPosiciones.get(academia.id)}">Top 1</span>
