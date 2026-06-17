@@ -66,9 +66,9 @@
                 </div>
                 <div class="col-12 col-sm-6">
                   <label class="form-label small fw-semibold" for="cursoId">Curso</label>
-                  <select class="form-select" id="cursoId" th:field="*{curso}">
+                  <select class="form-select" id="cursoId" name="cursoId" th:value="${oferta.curso != null ? oferta.curso.id : ''}">
                     <option value="">Selecciona un curso</option>
-                    <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}"></option>
+                    <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}" th:selected="${oferta.curso != null and oferta.curso.id == curso.id}"></option>
                   </select>
                 </div>
               </div>
