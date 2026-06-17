@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.academymanager.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,4 +13,6 @@ import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
 public interface DirectorRepository extends JpaRepository<Director, TipoUsuarioId> {
   @Query("SELECT d FROM Director d WHERE d.usuario.id = :usuarioId AND d.academia.id = :academiaId")
   Director findByUsuarioIdAndAcademiaId(String usuarioId, String academiaId);
+  List<Director> findByUsuarioId(String usuarioId);
+  boolean existsByUsuarioIdAndAcademiaId(String usuarioId, String academiaId);
 }
