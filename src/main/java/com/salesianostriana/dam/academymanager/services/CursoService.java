@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesianostriana.dam.academymanager.exceptions.AlumnoYaInscritoException;
 import com.salesianostriana.dam.academymanager.exceptions.CupoAlcanzadoException;
 import com.salesianostriana.dam.academymanager.exceptions.CupoNoPermitidoException;
 import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
@@ -156,13 +157,22 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     if (!tieneCupoDisponible(curso, alumnoIds.size())) {
       throw new CupoAlcanzadoException("No hay plazas suficientes. Solo quedan " + plazasDisponibles(curso) + " plazas disponibles.");
     }
+    List<Curso> cursosAcademia = repository.findByAcademiaId(academiaId);
     for (String aid : alumnoIds) {
-      curso.getAlumnos().add(
-        alumnoRepository.findById(TipoUsuarioId.builder()
+      Alumno alumno = alumnoRepository.findById(TipoUsuarioId.builder()
           .academiaId(academiaId)
           .usuarioId(aid)
-          .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"))
-      );
+          .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"));
+      for (Curso otroCurso : cursosAcademia) {
+        if (otroCurso.getId().equals(curso.getId())) {
+          continue;
+        }
+        if (otroCurso.getAlumnos() != null && otroCurso.getAlumnos().contains(alumno) && cursosSeSolapan(curso, otroCurso)) {
+          throw new AlumnoYaInscritoException("El alumno " + alumno.getUsuario().getNombre() + " " + alumno.getUsuario().getApellidos()
+              + " ya esta inscrito en el curso \"" + otroCurso.getNombre() + "\" de la misma academia y los horarios se solapan.");
+        }
+      }
+      curso.getAlumnos().add(alumno);
     }
   }
 
@@ -177,9 +187,26 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
   }
 
   public List<Alumno> findAlumnosDisponibles(Curso curso) {
+    List<Curso> cursosAcademia = repository.findByAcademiaId(curso.getAcademia().getId());
     return curso.getAcademia().getAlumnos().stream()
-      .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
-      .toList();
+        .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
+        .filter(alumno -> cursosAcademia.stream().noneMatch(otroCurso ->
+            !otroCurso.getId().equals(curso.getId())
+            && otroCurso.getAlumnos() != null
+            && otroCurso.getAlumnos().contains(alumno)
+            && cursosSeSolapan(curso, otroCurso)))
+        .toList();
+  }
+
+  private boolean cursosSeSolapan(Curso a, Curso b) {
+    LocalDate aInicio = a.getFechaInicio();
+    LocalDate aFin = a.getFechaFin();
+    LocalDate bInicio = b.getFechaInicio();
+    LocalDate bFin = b.getFechaFin();
+    if (aInicio == null || aFin == null || bInicio == null || bFin == null) {
+      return true;
+    }
+    return !aInicio.isAfter(bFin) && !bInicio.isAfter(aFin);
   }
 
   public Curso editarCurso(String cursoId, String nombre, String descripcion, LocalDate fechaInicio, LocalDate fechaFin, Integer cupoMaximo) {
