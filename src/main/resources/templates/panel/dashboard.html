@@ -33,14 +33,17 @@
       <p class="lead text-white-50 mb-0">Gestiona tus academias, cursos y ofertas desde aqui</p>
     </header>
 
-    <section th:if="${totalAcademias == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
+    <section th:if="${!esDirector && !tieneAcademias}" class="bg-white text-dark rounded shadow p-5 text-center">
       <i class="bi bi-info-circle display-1 text-secondary mb-3"></i>
-      <h2 class="h3 fw-bold mb-3">No eres director de ninguna academia</h2>
-      <p class="text-secondary mb-4">Crea una academia para empezar a gestionar cursos y ofertas.</p>
-      <a class="btn bg-brand text-white px-4" href="/academia/create">Crear academia</a>
+      <h2 class="h3 fw-bold mb-3">No participas en ninguna academia</h2>
+      <p class="text-secondary mb-4">Busca academias y unete como alumno o crea una academia para empezar a gestionar cursos y ofertas.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a class="btn bg-brand text-white px-4" href="/academias/find">Buscar academias</a>
+        <a class="btn btn-outline-dark px-4" href="/academia/create">Crear academia</a>
+      </div>
     </section>
 
-    <section th:if="${totalAcademias > 0}">
+    <section th:if="${esDirector}">
       <h2 class="h3 fw-semibold mb-4">Acciones rapidas</h2>
       <div class="d-flex flex-wrap gap-3 mb-5">
         <button type="button" class="btn bg-brand-light text-dark px-4 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#crearModal">
@@ -137,34 +140,111 @@
 
         <div class="row g-3" th:if="${#lists.size(cursosActivos) > 0}">
           <div class="col-12 col-md-6 col-lg-4" th:each="curso : ${cursosActivos}">
-            <div class="stat-card rounded-3 p-3 h-100">
-              <h5 class="fw-semibold mb-1" th:text="${curso.nombre}">Nombre curso</h5>
-              <p class="text-brand-light small mb-2" th:text="${curso.academia.nombre}">Academia</p>
-              <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-2">
-                <span class="badge bg-brand-light text-dark small">
-                  <i class="bi bi-calendar3 me-1"></i>
-                  <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
-                  -
-                  <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
-                </span>
+            <a class="text-decoration-none text-white" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">
+              <div class="stat-card rounded-3 p-3 h-100">
+                <h5 class="fw-semibold mb-1" th:text="${curso.nombre}">Nombre curso</h5>
+                <p class="text-brand-light small mb-2" th:text="${curso.academia.nombre}">Academia</p>
+                <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-2">
+                  <span class="badge bg-brand-light text-dark small">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
+                    -
+                    <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+                  </span>
+                </div>
+                <ul class="list-unstyled d-flex gap-3 small text-white-50 mb-0">
+                  <li>
+                    <i class="bi bi-people me-1"></i>
+                    <span th:text="${#sets.size(curso.alumnos)}">0</span> alumnos
+                  </li>
+                  <li>
+                    <i class="bi bi-person-workspace me-1"></i>
+                    <span th:text="${#sets.size(curso.profesores)}">0</span> profesores
+                  </li>
+                </ul>
               </div>
-              <ul class="list-unstyled d-flex gap-3 small text-white-50 mb-0">
-                <li>
-                  <i class="bi bi-people me-1"></i>
-                  <span th:text="${#sets.size(curso.alumnos)}">0</span> alumnos
-                </li>
-                <li>
-                  <i class="bi bi-person-workspace me-1"></i>
-                  <span th:text="${#sets.size(curso.profesores)}">0</span> profesores
-                </li>
-              </ul>
-            </div>
+            </a>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <section th:if="${!esDirector && tieneAcademias}">
+      <h2 class="h3 fw-semibold mb-4">Acciones rapidas</h2>
+      <div class="d-flex flex-wrap gap-3 mb-5">
+        <a class="btn btn-outline-light px-4 py-2" href="/panel/academias">
+          <i class="bi bi-building me-2"></i>Mis academias
+        </a>
+        <a class="btn btn-outline-light px-4 py-2" href="/panel/cursos">
+          <i class="bi bi-book me-2"></i>Mis cursos <span class="badge bg-brand-light text-dark ms-1" th:text="${totalCursos}">0</span>
+        </a>
+      </div>
+
+      <div>
+        <h2 class="h4 fw-semibold mb-3">
+          <i class="bi bi-book-fill text-brand-light me-2"></i>Cursos activos
+        </h2>
+
+        <div th:if="${#lists.size(cursosActivos) == 0}" class="stat-card rounded-3 p-4 text-center">
+          <i class="bi bi-book fs-1 text-white-50 mb-2"></i>
+          <p class="text-white-50 mb-0">No estas inscrito en ningun curso activo</p>
+        </div>
+
+        <div class="row g-3" th:if="${#lists.size(cursosActivos) > 0}">
+          <div class="col-12 col-md-6 col-lg-4" th:each="curso : ${cursosActivos}">
+            <a class="text-decoration-none text-white" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">
+              <div class="stat-card rounded-3 p-3 h-100">
+                <h5 class="fw-semibold mb-1" th:text="${curso.nombre}">Nombre curso</h5>
+                <p class="text-brand-light small mb-2" th:text="${curso.academia.nombre}">Academia</p>
+                <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-2">
+                  <span class="badge bg-brand-light text-dark small">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
+                    -
+                    <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+                  </span>
+                </div>
+                <ul class="list-unstyled d-flex gap-3 small text-white-50 mb-0">
+                  <li>
+                    <i class="bi bi-people me-1"></i>
+                    <span th:text="${#sets.size(curso.alumnos)}">0</span> alumnos
+                  </li>
+                  <li>
+                    <i class="bi bi-person-workspace me-1"></i>
+                    <span th:text="${#sets.size(curso.profesores)}">0</span> profesores
+                  </li>
+                </ul>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <h2 class="h4 fw-semibold mb-3">
+          <i class="bi bi-briefcase-fill text-brand-light me-2"></i>Mis candidaturas
+        </h2>
+
+        <div th:if="${#lists.size(misCandidaturas) == 0}" class="stat-card rounded-3 p-4 text-center">
+          <i class="bi bi-briefcase fs-1 text-white-50 mb-2"></i>
+          <p class="text-white-50 mb-0">No has aplicado a ninguna oferta</p>
+        </div>
+
+        <div class="row g-3" th:if="${#lists.size(misCandidaturas) > 0}">
+          <div class="col-12 col-md-6 col-lg-4" th:each="oferta : ${misCandidaturas}">
+            <a class="text-decoration-none text-white" th:href="@{/ofertas/{id}(id=${oferta.id})}">
+              <div class="stat-card rounded-3 p-3 h-100">
+                <h5 class="fw-semibold mb-1" th:text="${oferta.titulo}">Titulo oferta</h5>
+                <p class="text-brand-light small mb-2" th:text="${oferta.academia.nombre}">Academia</p>
+                <span class="badge bg-brand text-capitalize text-white" th:text="${oferta.tipoOferta}">Tipo</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div th:if="${esDirector}" class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-brand-dark text-white border border-secondary border-opacity-25">
           <div class="modal-header border-secondary border-opacity-25">
@@ -196,7 +276,7 @@
       </div>
     </div>
 
-    <script th:inline="javascript">
+    <script th:if="${esDirector}" th:inline="javascript">
       const academias = [[${academiasDirector}]];
       let tipoSeleccionado = '';
 

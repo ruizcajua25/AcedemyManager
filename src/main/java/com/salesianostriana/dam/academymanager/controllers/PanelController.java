@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.salesianostriana.dam.academymanager.modules.Academia;
+import com.salesianostriana.dam.academymanager.modules.Alumno;
 import com.salesianostriana.dam.academymanager.modules.Curso;
 import com.salesianostriana.dam.academymanager.modules.Oferta;
+import com.salesianostriana.dam.academymanager.modules.Profesor;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
+import com.salesianostriana.dam.academymanager.services.AlumnoService;
 import com.salesianostriana.dam.academymanager.services.CursoService;
 import com.salesianostriana.dam.academymanager.services.OfertaService;
+import com.salesianostriana.dam.academymanager.services.ProfesorService;
 
 @Controller
 @RequestMapping("/panel")
@@ -33,35 +37,76 @@ public class PanelController {
   @Autowired
   private OfertaService ofertaService;
 
+  @Autowired
+  private AlumnoService alumnoService;
+
+  @Autowired
+  private ProfesorService profesorService;
+
   @GetMapping
   public String dashboard(@AuthenticationPrincipal Usuario usuario, Model model) {
     List<Academia> academiasDirector = academiaService.findMisAcademiasComoDirector(usuario.getId());
+    boolean esDirector = !academiasDirector.isEmpty();
 
     List<Curso> cursosActivos = new ArrayList<>();
     List<Oferta> ofertasConCandidatos = new ArrayList<>();
+    List<Oferta> misCandidaturas = new ArrayList<>();
     List<Curso> cursosSinProfesores = new ArrayList<>();
     List<Oferta> ofertasSinCandidatos = new ArrayList<>();
     int totalCandidatos = 0;
+    int totalOfertas = 0;
 
-    for (Academia academia : academiasDirector) {
-      String academiaId = academia.getId();
+    if (esDirector) {
+      for (Academia academia : academiasDirector) {
+        String academiaId = academia.getId();
 
-      cursosActivos.addAll(cursoService.findCursosActivosByAcademia(academiaId));
-      cursosSinProfesores.addAll(cursoService.findCursosSinProfesoresByAcademia(academiaId));
+        cursosActivos.addAll(cursoService.findCursosActivosByAcademia(academiaId));
+        cursosSinProfesores.addAll(cursoService.findCursosSinProfesoresByAcademia(academiaId));
 
-      List<Oferta> ofertasAcademia = ofertaService.findOfertasActivasByAcademia(academiaId);
-      ofertasConCandidatos.addAll(ofertaService.findOfertasConCandidatosByAcademia(academiaId));
-      ofertasSinCandidatos.addAll(ofertaService.findOfertasSinCandidatosByAcademia(academiaId));
-      totalCandidatos += ofertaService.totalCandidatosByAcademia(academiaId);
+        List<Oferta> ofertasAcademia = ofertaService.findByAcademia(academia);
+        totalOfertas += ofertasAcademia.size();
+        ofertasConCandidatos.addAll(ofertaService.findOfertasConCandidatosByAcademia(academiaId));
+        ofertasSinCandidatos.addAll(ofertaService.findOfertasSinCandidatosByAcademia(academiaId));
+        totalCandidatos += ofertaService.totalCandidatosByAcademia(academiaId);
+      }
+    } else {
+      List<Alumno> alumnos = alumnoService.findByUsuarioId(usuario.getId());
+      List<Profesor> profesores = profesorService.findByUsuarioId(usuario.getId());
+
+      for (Alumno alumno : alumnos) {
+        if (alumno.getCursos() != null) {
+          for (Curso curso : alumno.getCursos()) {
+            if (cursoService.esCursoActivo(curso) && !cursosActivos.contains(curso)) {
+              cursosActivos.add(curso);
+            }
+          }
+        }
+      }
+
+      for (Profesor profesor : profesores) {
+        if (profesor.getCursos() != null) {
+          for (Curso curso : profesor.getCursos()) {
+            if (cursoService.esCursoActivo(curso) && !cursosActivos.contains(curso)) {
+              cursosActivos.add(curso);
+            }
+          }
+        }
+      }
+
+      misCandidaturas.addAll(ofertaService.findByUsuarioId(usuario.getId()));
     }
 
+    boolean tieneAcademias = esDirector || !alumnoService.findByUsuarioId(usuario.getId()).isEmpty() || !profesorService.findByUsuarioId(usuario.getId()).isEmpty();
+    model.addAttribute("tieneAcademias", tieneAcademias);
+    model.addAttribute("esDirector", esDirector);
     model.addAttribute("academias", academiasDirector);
     model.addAttribute("totalAcademias", academiasDirector.size());
     model.addAttribute("totalCursos", cursosActivos.size());
-    model.addAttribute("totalOfertas", ofertaService.findAllActivas().size());
+    model.addAttribute("totalOfertas", totalOfertas);
     model.addAttribute("totalCandidatos", totalCandidatos);
     model.addAttribute("cursosActivos", cursosActivos);
     model.addAttribute("ofertasConCandidatos", ofertasConCandidatos);
+    model.addAttribute("misCandidaturas", misCandidaturas);
     model.addAttribute("cursosSinProfesores", cursosSinProfesores);
     model.addAttribute("ofertasSinCandidatos", ofertasSinCandidatos);
 
