@@ -30,18 +30,22 @@
           <i class="bi bi-arrow-left"></i> Volver al panel
         </a>
         <h1 class="display-5 fw-bold mb-2 mt-2">Mis Academias</h1>
-        <p class="lead text-white-50 mb-0">Gestiona las academias que diriges</p>
+        <p class="lead text-white-50 mb-0" th:if="${esDirector}">Gestiona las academias que diriges</p>
+        <p class="lead text-white-50 mb-0" th:unless="${esDirector}">Academias donde participas</p>
       </div>
-      <a class="btn bg-brand-light text-dark px-4" href="/academia/create">
+      <a th:if="${esDirector}" class="btn bg-brand-light text-dark px-4" href="/academia/create">
         <i class="bi bi-plus-circle me-2"></i>Nueva academia
       </a>
     </header>
 
     <div th:if="${#lists.size(academias) == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
       <i class="bi bi-building display-1 text-secondary mb-3"></i>
-      <h2 class="h3 fw-bold mb-3">No eres director de ninguna academia</h2>
-      <p class="text-secondary mb-4">Crea una academia para empezar a gestionarla.</p>
-      <a class="btn bg-brand text-white px-4" href="/academia/create">Crear academia</a>
+      <h2 class="h3 fw-bold mb-3" th:if="${esDirector}">No eres director de ninguna academia</h2>
+      <h2 class="h3 fw-bold mb-3" th:unless="${esDirector}">No participas en ninguna academia</h2>
+      <p class="text-secondary mb-4" th:if="${esDirector}">Crea una academia para empezar a gestionarla.</p>
+      <p class="text-secondary mb-4" th:unless="${esDirector}">Busca academias y unete como alumno.</p>
+      <a th:if="${esDirector}" class="btn bg-brand text-white px-4" href="/academia/create">Crear academia</a>
+      <a th:unless="${esDirector}" class="btn bg-brand text-white px-4" href="/academias/find">Buscar academias</a>
     </div>
 
     <section th:if="${#lists.size(academias) > 0}" class="row g-4">
@@ -49,7 +53,8 @@
         <div class="academy-card rounded-3 p-4 h-100">
           <div class="d-flex justify-content-between align-items-start mb-3">
             <h2 class="h5 fw-bold mb-0 text-truncate" th:text="${academia.nombre}">Academia</h2>
-            <span class="badge bg-brand-light text-dark">Director</span>
+            <span th:if="${esDirector}" class="badge bg-brand-light text-dark">Director</span>
+            <span th:unless="${esDirector}" class="badge bg-brand-light text-dark">Participante</span>
           </div>
 
           <p class="text-white-50 small mb-3" th:text="${academia.direccion}">Direccion</p>
@@ -73,13 +78,13 @@
             <a class="btn btn-sm btn-outline-light flex-grow-1" th:href="@{/academias/{id}(id=${academia.id})}" title="Ver academia">
               <i class="bi bi-eye me-1"></i>Ver
             </a>
-            <a class="btn btn-sm btn-outline-light" th:href="@{/academias/{id}/editar(id=${academia.id})}" title="Editar academia">
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/academias/{id}/editar(id=${academia.id})}" title="Editar academia">
               <i class="bi bi-pencil"></i>
             </a>
-            <a class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" title="Crear curso">
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" title="Crear curso">
               <i class="bi bi-book"></i>
             </a>
-            <a class="btn btn-sm btn-outline-light" th:href="@{/ofertas/crear?academiaId={id}(id=${academia.id})}" title="Crear oferta">
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/ofertas/crear?academiaId={id}(id=${academia.id})}" title="Crear oferta">
               <i class="bi bi-briefcase"></i>
             </a>
           </div>

@@ -125,6 +125,25 @@ public class PanelController {
   @GetMapping("/academias")
   public String misAcademias(@AuthenticationPrincipal Usuario usuario, Model model) {
     List<Academia> academias = academiaService.findMisAcademiasComoDirector(usuario.getId());
+    boolean esDirector = !academias.isEmpty();
+
+    if (!esDirector) {
+      HashMap<String, List<Academia>> academiasPorRol = academiaService.findAllByUsuario(usuario.getId());
+      List<Academia> todas = new ArrayList<>();
+      if (academiasPorRol.containsKey("alumno")) {
+        todas.addAll(academiasPorRol.get("alumno"));
+      }
+      if (academiasPorRol.containsKey("profesor")) {
+        for (Academia a : academiasPorRol.get("profesor")) {
+          if (!todas.contains(a)) {
+            todas.add(a);
+          }
+        }
+      }
+      academias = todas;
+    }
+
+    model.addAttribute("esDirector", esDirector);
     model.addAttribute("academias", academias);
     return "panel/academias";
   }
@@ -132,25 +151,78 @@ public class PanelController {
   @GetMapping("/cursos")
   public String misCursos(@AuthenticationPrincipal Usuario usuario, Model model) {
     List<Academia> academias = academiaService.findMisAcademiasComoDirector(usuario.getId());
+    boolean esDirector = !academias.isEmpty();
 
     List<Curso> cursos = new ArrayList<>();
-    for (Academia academia : academias) {
-      cursos.addAll(cursoService.findByAcademiaOrderByNombre(academia.getId()));
+    Map<String, Boolean> cursosActivos = new HashMap<>();
+
+    if (esDirector) {
+      for (Academia academia : academias) {
+        for (Curso curso : cursoService.findByAcademiaOrderByNombre(academia.getId())) {
+          cursos.add(curso);
+          cursosActivos.put(curso.getId(), cursoService.esCursoActivo(curso));
+        }
+      }
+    } else {
+      List<Alumno> alumnos = alumnoService.findByUsuarioId(usuario.getId());
+      List<Profesor> profesores = profesorService.findByUsuarioId(usuario.getId());
+
+      for (Alumno alumno : alumnos) {
+        if (alumno.getCursos() != null) {
+          for (Curso curso : alumno.getCursos()) {
+            if (!cursos.contains(curso)) {
+              cursos.add(curso);
+              cursosActivos.put(curso.getId(), cursoService.esCursoActivo(curso));
+            }
+          }
+        }
+      }
+
+      for (Profesor profesor : profesores) {
+        if (profesor.getCursos() != null) {
+          for (Curso curso : profesor.getCursos()) {
+            if (!cursos.contains(curso)) {
+              cursos.add(curso);
+              cursosActivos.put(curso.getId(), cursoService.esCursoActivo(curso));
+            }
+          }
+        }
+      }
     }
 
+    model.addAttribute("esDirector", esDirector);
     model.addAttribute("cursos", cursos);
+    model.addAttribute("cursosActivos", cursosActivos);
     return "panel/cursos";
   }
 
   @GetMapping("/ofertas")
   public String misOfertas(@AuthenticationPrincipal Usuario usuario, Model model) {
     List<Academia> academias = academiaService.findMisAcademiasComoDirector(usuario.getId());
+    boolean esDirector = !academias.isEmpty();
+
+    if (!esDirector) {
+      HashMap<String, List<Academia>> academiasPorRol = academiaService.findAllByUsuario(usuario.getId());
+      List<Academia> todas = new ArrayList<>();
+      if (academiasPorRol.containsKey("alumno")) {
+        todas.addAll(academiasPorRol.get("alumno"));
+      }
+      if (academiasPorRol.containsKey("profesor")) {
+        for (Academia a : academiasPorRol.get("profesor")) {
+          if (!todas.contains(a)) {
+            todas.add(a);
+          }
+        }
+      }
+      academias = todas;
+    }
 
     List<Oferta> ofertas = new ArrayList<>();
     for (Academia academia : academias) {
       ofertas.addAll(ofertaService.findByAcademia(academia));
     }
 
+    model.addAttribute("esDirector", esDirector);
     model.addAttribute("ofertas", ofertas);
     return "panel/ofertas";
   }

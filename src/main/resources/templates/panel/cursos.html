@@ -30,15 +30,19 @@
           <i class="bi bi-arrow-left"></i> Volver al panel
         </a>
         <h1 class="display-5 fw-bold mb-2 mt-2">Mis Cursos</h1>
-        <p class="lead text-white-50 mb-0">Todos los cursos de tus academias</p>
+        <p class="lead text-white-50 mb-0" th:if="${esDirector}">Todos los cursos de tus academias</p>
+        <p class="lead text-white-50 mb-0" th:unless="${esDirector}">Tus cursos</p>
       </div>
     </header>
 
     <div th:if="${#lists.size(cursos) == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
       <i class="bi bi-book display-1 text-secondary mb-3"></i>
-      <h2 class="h3 fw-bold mb-3">No tienes cursos todavia</h2>
-      <p class="text-secondary mb-4">Crea cursos desde el detalle de cada academia.</p>
-      <a class="btn bg-brand text-white px-4" href="/panel/academias">Ver academias</a>
+      <h2 class="h3 fw-bold mb-3" th:if="${esDirector}">No tienes cursos todavia</h2>
+      <h2 class="h3 fw-bold mb-3" th:unless="${esDirector}">No estas inscrito en ningun curso</h2>
+      <p class="text-secondary mb-4" th:if="${esDirector}">Crea cursos desde el detalle de cada academia.</p>
+      <p class="text-secondary mb-4" th:unless="${esDirector}">Busca academias y unete a un curso.</p>
+      <a th:if="${esDirector}" class="btn bg-brand text-white px-4" href="/panel/academias">Ver academias</a>
+      <a th:unless="${esDirector}" class="btn bg-brand text-white px-4" href="/academias/find">Buscar academias</a>
     </div>
 
     <section th:if="${#lists.size(cursos) > 0}" class="row g-4">
@@ -46,6 +50,12 @@
         <div class="course-card rounded-3 p-4 h-100">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <h2 class="h5 fw-bold mb-0 text-truncate" th:text="${curso.nombre}">Curso</h2>
+            <span th:if="${cursosActivos.get(curso.id)}" class="badge bg-success">
+              <i class="bi bi-check-circle-fill me-1"></i>Activo
+            </span>
+            <span th:unless="${cursosActivos.get(curso.id)}" class="badge bg-secondary">
+              <i class="bi bi-pause-circle-fill me-1"></i>Inactivo
+            </span>
           </div>
 
           <p class="text-brand-light small mb-2" th:text="${curso.academia.nombre}">Academia</p>
@@ -87,7 +97,7 @@
             <a class="btn btn-sm btn-outline-light px-2 py-1 small" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}" title="Ver personas">
               <i class="bi bi-people"></i>
             </a>
-            <a class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">
               <i class="bi bi-pencil"></i>
             </a>
           </div>
