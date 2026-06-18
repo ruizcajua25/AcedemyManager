@@ -18,6 +18,6 @@ public class AlumnoService extends BaseService<Alumno, TipoUsuarioId, AlumnoRepo
     return repository.findByUsuarioId(usuarioId);
   }
   public Alumno findByUsuarioIdAndAcademiaId(String academiaId, String usuarioId) {
-    return repository.findByUsuarioIdAndAcademiaId(academiaId, usuarioId);
+    return repository.findByUsuarioIdAndAcademiaId(usuarioId, academiaId);
   }
 }
