@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.salesianostriana.dam.academymanager.modules.Usuario;
 import com.salesianostriana.dam.academymanager.services.AcademiaService;
 import com.salesianostriana.dam.academymanager.services.UsuarioService;
+import java.util.List;
 
 
 @Controller
@@ -27,9 +28,9 @@ public class UsuarioController {
   public String miUsuario(@AuthenticationPrincipal Usuario usuario, Model model) {
     var academias = academiaService.findAllByUsuario(usuario.getId());
     
-    int totalDirector = academias.get("director").size();
-    int totalAlumno = academias.get("alumno").size();
-    int totalProfesor = academias.get("profesor").size();
+    int totalDirector = academias.getOrDefault("director", List.of()).size();
+    int totalAlumno = academias.getOrDefault("alumno", List.of()).size();
+    int totalProfesor = academias.getOrDefault("profesor", List.of()).size();
     
     model.addAttribute("academias", academias);
     model.addAttribute("usuario", usuario);
