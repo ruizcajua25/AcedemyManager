@@ -65,8 +65,8 @@ public class DataLoader implements CommandLineRunner {
       .dni("00000001B")
       .nombre("Usuario")
       .apellidos("Generico")
-      .username("usuario")
-      .password(passwordEncoder.encode("usuario"))
+      .username("user")
+      .password(passwordEncoder.encode("user"))
       .email("usuario@academymanager.com")
       .role("ROLE_USER")
       .build());
