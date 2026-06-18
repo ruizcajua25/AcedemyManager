@@ -8,12 +8,22 @@
   <link rel="stylesheet" href="/styles/colors.css">
   <title>Mi Perfil</title>
   <style>
-    .profile-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    .stat-box {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      transition: transform 0.2s ease, background-color 0.2s ease;
     }
-    .profile-card:hover {
-      transform: translateY(-3px);
+    .stat-box:hover {
+      transform: translateY(-2px);
       background-color: rgba(255, 255, 255, 0.08);
+    }
+    .data-row {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .data-row:last-child {
+      border-bottom: none;
     }
   </style>
 </head>
@@ -37,81 +47,70 @@
                 <span th:text="${usuario.email}"></span>
               </div>
             </div>
-            <div>
-              <a href="/academia/create" class="btn bg-brand-light text-dark fw-semibold px-4 py-2">
-                <i class="bi bi-plus-circle-fill me-2"></i>Crear academia
-              </a>
-            </div>
+            <a href="/perfil/editar" class="btn btn-outline-light fw-semibold px-4 py-2 align-self-start">
+              <i class="bi bi-pencil-square me-2"></i>Editar perfil
+            </a>
           </div>
         </header>
 
-        <section class="mb-5">
-          <h2 class="h3 fw-semibold mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-mortarboard-fill text-brand-light"></i> Mis Academias
-          </h2>
-          
-          <div th:if="${academias.get('director') == null && academias.get('alumno') == null && academias.get('profesor') == null}" class="p-4 rounded border border-secondary border-opacity-25 text-center" style="background-color: rgba(255,255,255,0.05);">
-            <p class="text-white-50 mb-0">No formas parte de ninguna academia todavia.</p>
+        <div class="row g-4 mb-5">
+          <div class="col-12 col-md-6 col-lg-3">
+            <a href="/panel/academias" class="text-decoration-none">
+              <div class="stat-box p-3 text-center h-100">
+                <i class="bi bi-building display-6 text-brand-light"></i>
+                <h3 class="fw-bold mb-1 mt-2" th:text="${totalAcademias}">0</h3>
+                <p class="text-white-50 small mb-0">Academias</p>
+              </div>
+            </a>
           </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-box p-3 text-center h-100">
+              <i class="bi bi-shield-check display-6 text-success"></i>
+              <h3 class="fw-bold mb-1 mt-2" th:text="${totalDirector}">0</h3>
+              <p class="text-white-50 small mb-0">Como Director</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-box p-3 text-center h-100">
+              <i class="bi bi-person-workspace display-6 text-warning"></i>
+              <h3 class="fw-bold mb-1 mt-2" th:text="${totalProfesor}">0</h3>
+              <p class="text-white-50 small mb-0">Como Profesor</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-box p-3 text-center h-100">
+              <i class="bi bi-mortarboard-fill display-6 text-info"></i>
+              <h3 class="fw-bold mb-1 mt-2" th:text="${totalAlumno}">0</h3>
+              <p class="text-white-50 small mb-0">Como Alumno</p>
+            </div>
+          </div>
+        </div>
 
-          <div class="row g-3">
-            
-            <div th:if="${academias.get('director')}" th:each="academia : ${academias.get('director')}" class="col-12 col-md-6 col-lg-4">
-              <div class="profile-card h-100 p-3 rounded border border-secondary border-opacity-25 position-relative" style="background-color: rgba(255,255,255,0.05);">
-                <h5 class="fw-semibold mb-2">
-                  <a th:href="@{/academias/{id}(id=${academia.id})}" class="text-white text-decoration-none stretched-link" th:text="${academia.nombre}"></a>
-                </h5>
-                <span class="badge bg-success align-self-start">Director</span>
+        <div class="row g-4 mb-5">
+          <div class="col-12 col-lg-8">
+            <div class="p-4 rounded border border-secondary border-opacity-25" style="background-color: rgba(255,255,255,0.05);">
+              <h2 class="h5 fw-semibold mb-4 d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge-fill text-brand-light"></i> Datos personales
+              </h2>
+              <div class="data-row">
+                <span class="text-white-50 small d-block">DNI</span>
+                <span class="fw-semibold" th:text="${usuario.dni}">—</span>
+              </div>
+              <div class="data-row">
+                <span class="text-white-50 small d-block">Nombre completo</span>
+                <span class="fw-semibold" th:text="${usuario.nombre + ' ' + usuario.apellidos}">—</span>
+              </div>
+              <div class="data-row">
+                <span class="text-white-50 small d-block">Email</span>
+                <span class="fw-semibold" th:text="${usuario.email}">—</span>
+              </div>
+              <div class="data-row">
+                <span class="text-white-50 small d-block">Nombre de usuario</span>
+                <span class="fw-semibold" th:text="${usuario.username}">—</span>
               </div>
             </div>
-
-            <div th:if="${academias.get('alumno')}" th:each="academia : ${academias.get('alumno')}" class="col-12 col-md-6 col-lg-4">
-              <div class="profile-card h-100 p-3 rounded border border-secondary border-opacity-25 position-relative" style="background-color: rgba(255,255,255,0.05);">
-                <h5 class="fw-semibold mb-2">
-                  <a th:href="@{/academias/{id}(id=${academia.id})}" class="text-white text-decoration-none stretched-link" th:text="${academia.nombre}"></a>
-                </h5>
-                <span class="badge bg-info text-dark align-self-start">Alumno</span>
-              </div>
-            </div>
-
-            <div th:if="${academias.get('profesor')}" th:each="academia : ${academias.get('profesor')}" class="col-12 col-md-6 col-lg-4">
-              <div class="profile-card h-100 p-3 rounded border border-secondary border-opacity-25 position-relative" style="background-color: rgba(255,255,255,0.05);">
-                <h5 class="fw-semibold mb-2">
-                  <a th:href="@{/academias/{id}(id=${academia.id})}" class="text-white text-decoration-none stretched-link" th:text="${academia.nombre}"></a>
-                </h5>
-                <span class="badge bg-warning text-dark align-self-start">Profesor</span>
-              </div>
-            </div>
-
           </div>
-        </section>
-
-        <section>
-          <h2 class="h3 fw-semibold mb-4 d-flex align-items-center gap-2">
-            <i class="bi bi-briefcase-fill text-brand-light"></i> Candidaturas Activas
-          </h2>
-          
-          <div th:if="${#sets.size(ofertasAplicadas) == 0}" class="p-4 rounded border border-secondary border-opacity-25 text-center" style="background-color: rgba(255,255,255,0.05);">
-            <i class="bi bi-info-circle d-block fs-3 text-white-50 mb-2"></i>
-            <span class="text-white-50">No has aplicado a ninguna oferta todavia.</span>
-          </div>
-
-          <div th:if="${#sets.size(ofertasAplicadas) > 0}" class="row g-3">
-            <div class="col-12 col-md-6" th:each="oferta : ${ofertasAplicadas}">
-              <a th:href="@{/ofertas/{id}(id=${oferta.id})}" class="text-decoration-none">
-                <div class="profile-card p-3 rounded border border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="background-color: rgba(255,255,255,0.05);">
-                  <div>
-                    <h5 class="fw-semibold mb-1 text-white" th:text="${oferta.titulo}"></h5>
-                    <span class="text-white-50 small d-flex align-items-center gap-1">
-                      <i class="bi bi-building"></i> <span th:text="${oferta.academia.nombre}"></span>
-                    </span>
-                  </div>
-                  <span class="badge bg-brand-light text-dark">En proceso</span>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
+        </div>
 
       </div>
     </div>

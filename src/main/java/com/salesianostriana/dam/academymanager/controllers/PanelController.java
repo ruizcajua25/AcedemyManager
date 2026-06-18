@@ -109,6 +109,7 @@ public class PanelController {
     model.addAttribute("misCandidaturas", misCandidaturas);
     model.addAttribute("cursosSinProfesores", cursosSinProfesores);
     model.addAttribute("ofertasSinCandidatos", ofertasSinCandidatos);
+    model.addAttribute("ofertasAplicadas", ofertaService.findByUsuarioId(usuario.getId()));
 
     List<Map<String, String>> academiasSimple = new ArrayList<>();
     for (Academia a : academiasDirector) {
