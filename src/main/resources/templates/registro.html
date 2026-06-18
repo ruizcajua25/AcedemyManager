@@ -43,7 +43,9 @@
               
               <div>
                 <label class="form-label small fw-semibold" for="dni">DNI</label>
-                <input class="form-control" type="text" id="dni" name="dni" placeholder="12345678A">
+                <input class="form-control" type="text" id="dni" name="dni" placeholder="12345678A"
+                       required pattern="[0-9]{8}[A-Z]" maxlength="9">
+                <div class="invalid-feedback">DNI invalido. Debe tener 8 digitos y una letra valida.</div>
               </div>
               
               <div>
@@ -81,17 +83,5 @@
 
   <div th:replace="~{fragments/footer :: pie}"></div>
 
-  <script>
-    const form = document.querySelector('form');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    form.addEventListener('submit', function(event) {
-      if (passwordInput.value !== confirmPasswordInput.value) {
-        event.preventDefault();
-        alert('Las contrasenas no coinciden. Por favor, intentelo de nuevo.');
-      }
-    });
-  </script>
 </body>
 </html>
