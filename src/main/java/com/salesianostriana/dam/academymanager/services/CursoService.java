@@ -127,6 +127,13 @@ public class CursoService extends BaseService<Curso, String, CursoRepository> {
     return repository.findByAcademiaIdOrderByNombre(academiaId);
   }
 
+  public List<Curso> findCursosByUsuarioAndAcademia(String usuarioId, String academiaId) {
+    List<Curso> cursos = new java.util.ArrayList<>();
+    cursos.addAll(repository.findByAcademiaIdAndAlumnosUsuarioId(academiaId, usuarioId));
+    cursos.addAll(repository.findByAcademiaIdAndProfesoresUsuarioId(academiaId, usuarioId));
+    return cursos.stream().distinct().toList();
+  }
+
   public boolean esDirectorDeCurso(String cursoId, String usuarioId) {
     Curso curso = findById(cursoId).orElseThrow(() -> new ObjetoNoEncontradoException("Curso no encontrado"));
     return curso.getAcademia().getDirectores().stream()

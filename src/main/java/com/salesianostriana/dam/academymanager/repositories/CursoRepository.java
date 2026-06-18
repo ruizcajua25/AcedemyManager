@@ -15,4 +15,6 @@ public interface CursoRepository extends JpaRepository<Curso, String> {
   List<Curso> findByAcademiaIdOrderByNombre(String academiaId);
   List<Curso> findByAcademiaIdAndProfesoresIsEmpty(String academiaId);
   List<Curso> findByProfesoresIsEmpty();
+  List<Curso> findByAcademiaIdAndAlumnosUsuarioId(String academiaId, String usuarioId);
+  List<Curso> findByAcademiaIdAndProfesoresUsuarioId(String academiaId, String usuarioId);
 }
