@@ -67,9 +67,14 @@
               <i class="bi bi-trophy-fill me-1"></i>
               <span th:text="'Top ' + ${topPosiciones.get(academia.id)}">Top 1</span>
             </span>
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <h2 class="h4 fw-bold text-truncate mb-0" th:text="${academia.nombre}">Academia sin nombre</h2>
+            <h2 class="h4 fw-bold text-truncate mb-1" th:text="${academia.nombre}">Academia sin nombre</h2>
+
+            <div th:if="${misAcademiasIds.contains(academia.id)}" class="mb-2">
+              <span class="badge bg-success text-white">
+                <i class="bi bi-check-circle-fill me-1"></i>Perteneces a esta academia
+              </span>
             </div>
+
             <div class="mb-3" th:replace="~{fragments/valoracion :: estrellas(${valoraciones.get(academia.id)})}"></div>
             <p class="text-secondary mb-3" th:if="${academia.descripcion}" th:text="${academia.descripcion}">Descripcion</p>
             <p class="text-secondary mb-3" th:unless="${academia.descripcion}" th:text="${academia.direccion}">Direccion</p>

@@ -95,7 +95,14 @@
     <div class="hero-section p-4 p-md-5 mb-5">
       <div class="row g-4 align-items-center">
         <div class="col-md-8">
-          <h1 class="display-5 fw-bold mb-3" th:text="${academia.nombre}">Nombre de la academia</h1>
+          <h1 class="display-5 fw-bold mb-2" th:text="${academia.nombre}">Nombre de la academia</h1>
+
+          <div th:if="${pertenece}" class="mb-2">
+            <span class="badge bg-success text-white">
+              <i class="bi bi-check-circle-fill me-1"></i>Perteneces a esta academia
+            </span>
+          </div>
+
           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <div th:replace="~{fragments/valoracion :: estrellas(${valoracion})}"></div>
             <span th:if="${posicionTop != null}" class="badge bg-brand text-white">
@@ -135,16 +142,51 @@
 
     <div class="border-bottom border-secondary border-opacity-25 mb-4">
       <nav class="d-flex gap-1">
-        <button class="tab-link active" data-tab="ofertas" type="button">
-          <i class="bi bi-megaphone me-1"></i> Ofertas
-        </button>
-        <button class="tab-link" data-tab="cursos" type="button">
+        <button class="tab-link active" data-tab="cursos" type="button">
           <i class="bi bi-book me-1"></i> Cursos
+        </button>
+        <button class="tab-link" data-tab="ofertas" type="button">
+          <i class="bi bi-megaphone me-1"></i> Ofertas
         </button>
       </nav>
     </div>
 
-    <div id="tab-ofertas" class="tab-panel active">
+    <div id="tab-cursos" class="tab-panel active">
+
+      <div th:if="${!pertenece}" class="alert alert-warning bg-warning bg-opacity-10 border-warning text-warning mb-4 rounded-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Aviso:</strong> No perteneces a esta academia. Solo podrás ver la información básica de los cursos.
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h5 mb-0 fw-semibold text-white-50 text-uppercase">Cursos <span class="text-brand-light ms-1" th:text="${#lists.size(cursos)}">0</span></h2>
+        <a class="btn btn-sm btn-outline-light px-3" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}" th:if="${director}">
+          <i class="bi bi-plus-lg me-1"></i> Crear curso
+        </a>
+      </div>
+
+      <div th:if="${#lists.size(cursos) == 0}" class="text-center py-4 info-card">
+        <p class="text-white-50 mb-0 small">No hay cursos en esta academia todavia.</p>
+      </div>
+
+      <div class="row g-3" th:if="${#lists.size(cursos) > 0}">
+        <div class="col-md-6 col-lg-4" th:each="curso : ${cursos}">
+          <a th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" class="text-decoration-none d-block h-100">
+            <div class="hover-card h-100 p-4">
+              <h5 class="fw-semibold mb-2 text-white" th:text="${curso.nombre}">Nombre del curso</h5>
+              <span th:if="${misCursosIds.contains(curso.id)}" class="badge bg-success text-white mb-2">
+                <i class="bi bi-check-circle-fill me-1"></i>Perteneces
+              </span>
+              <br>
+              <span class="text-brand-light small" th:text="${misCursosIds.contains(curso.id)} ? 'Ir al curso &rarr;' : 'Explorar curso &rarr;'"></span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="tab-ofertas" class="tab-panel">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="h5 mb-0 fw-semibold text-white-50 text-uppercase">Ofertas Activas <span class="text-brand-light ms-1" th:text="${#lists.size(ofertasActivas)}">0</span></h2>
         <a class="btn btn-sm btn-outline-light px-3" th:href="@{/ofertas/crear?academiaId={id}(id=${academia.id})}" th:if="${director}">
@@ -166,77 +208,6 @@
           </a>
         </div>
       </div>
-    </div>
-
-    <div id="tab-cursos" class="tab-panel">
-
-      <div th:if="${alumno == null && director == null}">
-        <div class="alert alert-warning bg-warning bg-opacity-10 border-warning text-warning mb-4 rounded-3" role="alert">
-          <i class="bi bi-exclamation-triangle me-2"></i>
-          <strong>Aviso:</strong> No puedes ver las ofertas de esta academia. Solo los alumnos matriculados y el director pueden verlas.
-        </div>
-
-        <h2 class="h5 mb-4 fw-semibold text-white-50 text-uppercase">Cursos Disponibles</h2>
-
-        <div th:if="${#lists.size(cursosActivos) == 0}" class="text-center py-4 info-card">
-          <p class="text-white-50 mb-0 small">No hay cursos disponibles.</p>
-        </div>
-
-        <div class="row g-3" th:if="${#lists.size(cursosActivos) > 0}">
-          <div class="col-md-6 col-lg-4" th:each="curso : ${cursosActivos}">
-            <a th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" class="text-decoration-none d-block h-100">
-              <div class="hover-card h-100 p-4">
-                <h5 class="fw-semibold mb-2 text-white" th:text="${curso.nombre}">Nombre del curso</h5>
-                <span class="text-brand-light small">Explorar curso &rarr;</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div th:if="${alumno}">
-        <h2 class="h5 mb-4 fw-semibold text-white-50 text-uppercase">Mis Cursos <span class="text-brand-light ms-1" th:text="${#sets.size(alumno.cursos)}">0</span></h2>
-
-        <div th:if="${#sets.size(alumno.cursos) == 0}" class="text-center py-4 info-card">
-          <p class="text-white-50 mb-0 small">No estas matriculado en ningun curso actualmente.</p>
-        </div>
-
-        <div class="row g-3" th:if="${#sets.size(alumno.cursos) > 0}">
-          <div class="col-md-6 col-lg-4" th:each="curso : ${alumno.cursos}">
-            <a th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" class="text-decoration-none d-block h-100">
-              <div class="hover-card h-100 p-4">
-                <h5 class="fw-semibold mb-2 text-white" th:text="${curso.nombre}">Nombre del curso</h5>
-                <span class="text-brand-light small">Ir al curso &rarr;</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div th:if="${director}">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="h5 mb-0 fw-semibold text-white-50 text-uppercase">Todos los Cursos <span class="text-brand-light ms-1" th:text="${#lists.size(cursos)}">0</span></h2>
-          <a class="btn btn-sm btn-outline-light px-3" th:href="@{/academias/{academiaId}/cursos/crear(academiaId=${academia.id})}">
-            <i class="bi bi-plus-lg me-1"></i> Crear curso
-          </a>
-        </div>
-
-        <div th:if="${#lists.size(cursos) == 0}" class="text-center py-4 info-card">
-          <p class="text-white-50 mb-0 small">No hay cursos en esta academia todavia.</p>
-        </div>
-
-        <div class="row g-3" th:if="${#lists.size(cursos) > 0}">
-          <div class="col-md-6 col-lg-4" th:each="curso : ${cursos}">
-            <a th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${academia.id}, id=${curso.id})}" class="text-decoration-none d-block h-100">
-              <div class="hover-card h-100 p-4">
-                <h5 class="fw-semibold mb-2 text-white" th:text="${curso.nombre}">Nombre del curso</h5>
-                <span class="text-brand-light small">Administrar curso &rarr;</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-
     </div>
   </main>
 
