@@ -17,10 +17,10 @@
     }
   </style>
 </head>
-<body class="bg-brand-dark text-white min-vh-100">
+<body class="bg-brand-dark text-white min-vh-100 d-flex flex-column">
   <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
 
-  <main class="container py-5">
+  <main class="container py-5 flex-grow-1">
     <header class="d-flex flex-column flex-md-row justify-content-between gap-4 align-items-md-end mb-5">
       <div>
         <span class="text-brand-light fw-semibold text-uppercase">Panel personal</span>
@@ -106,5 +106,6 @@
       </div>
     </section>
   </main>
+  <div th:replace="~{fragments/footer :: pie}"></div>
 </body>
 </html>

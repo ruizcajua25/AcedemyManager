@@ -12,20 +12,28 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "ofertas")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Builder
 public class Oferta {
   @Id @GeneratedValue
+  @EqualsAndHashCode.Include
   private String id;
   
   @ManyToOne
+  @ToString.Exclude
   private Academia academia;
   
   private TipoOferta tipoOferta;
@@ -34,9 +42,11 @@ public class Oferta {
   private String descripcion;
   @ManyToMany
   @Builder.Default
+  @ToString.Exclude
   private List<Usuario> candidatos = new ArrayList<>();
 
   @ManyToOne
+  @ToString.Exclude
   private Curso curso;
 
   @Builder.Default

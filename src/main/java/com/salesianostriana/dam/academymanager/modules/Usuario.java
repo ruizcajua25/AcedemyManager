@@ -13,22 +13,30 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Table(name = "usuarios")
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Usuario implements UserDetails {
   @Id @GeneratedValue
+  @EqualsAndHashCode.Include
   private String id;
   private String dni;
   private String nombre;
   private String apellidos;
   private String username;
+  @ToString.Exclude
   private String password;
   private String email;
   @Builder.Default

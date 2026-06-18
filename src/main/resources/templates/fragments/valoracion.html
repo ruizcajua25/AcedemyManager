@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <div th:fragment="estrellas(valoracion)" class="d-inline-flex align-items-center">
+    <span class="fw-bold me-1" th:text="${#numbers.formatDecimal(valoracion, 1, 2)}">0.00</span>
+    <span class="text-warning">
+      <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+        <i class="bi" th:classappend="${i <= valoracion} ? 'bi-star-fill' : 'bi-star'"></i>
+      </th:block>
+    </span>
+  </div>
+</body>
+</html>

@@ -1,30 +1,231 @@
 package com.salesianostriana.dam.academymanager.services;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesianostriana.dam.academymanager.exceptions.AlumnoYaInscritoException;
+import com.salesianostriana.dam.academymanager.exceptions.CupoAlcanzadoException;
+import com.salesianostriana.dam.academymanager.exceptions.CupoNoPermitidoException;
+import com.salesianostriana.dam.academymanager.exceptions.ObjetoNoEncontradoException;
+import com.salesianostriana.dam.academymanager.modules.Academia;
 import com.salesianostriana.dam.academymanager.modules.Alumno;
 import com.salesianostriana.dam.academymanager.modules.Curso;
+import com.salesianostriana.dam.academymanager.modules.Profesor;
+import com.salesianostriana.dam.academymanager.modules.TipoUsuarioId;
+import com.salesianostriana.dam.academymanager.repositories.AlumnoRepository;
 import com.salesianostriana.dam.academymanager.repositories.CursoRepository;
+import com.salesianostriana.dam.academymanager.repositories.ProfesorRepository;
 
 @Service
 public class CursoService extends BaseService<Curso, String, CursoRepository> {
-  public void eliminarAlumno (Curso curso, String alumnoId) {
-    Set<Alumno> alumnos = new HashSet<>(curso.getAlumnos());
-    alumnos.removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
-    curso.setAlumnos(alumnos);
+  @Autowired
+  private ProfesorRepository profesorRepository;
+  @Autowired
+  private AlumnoRepository alumnoRepository;
+
+  public void eliminarAlumno(Curso curso, String alumnoId) {
+    curso.getAlumnos().removeIf(alumno -> alumno.getUsuario().getId().equals(alumnoId));
   }
 
   public boolean esCursoActivo (Curso curso) {
     if(curso.getFechaInicio() == null) {
       return true;
     }
-
     return curso.getFechaInicio().isBefore(LocalDate.now()) && curso.getFechaFin().isAfter(LocalDate.now());
   }
 
+  public int totalUsuariosEnCurso(Curso curso) {
+    int alumnos = curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
+    int profesores = curso.getProfesores() != null ? curso.getProfesores().size() : 0;
+    return alumnos + profesores;
+  }
 
+  public Map<String, Integer> resumenUsuariosEnCurso(Curso curso) {
+    Map<String, Integer> resumen = new java.util.HashMap<>();
+    int alumnos = curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
+    int profesores = curso.getProfesores() != null ? curso.getProfesores().size() : 0;
+    resumen.put("alumnos", alumnos);
+    resumen.put("profesores", profesores);
+    resumen.put("total", alumnos + profesores);
+    return resumen;
+  }
+
+  public int contarAlumnos(Curso curso) {
+    return curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
+  }
+
+  public int plazasDisponibles(Curso curso) {
+    if (curso.getCupoMaximo() == null) {
+      return Integer.MAX_VALUE;
+    }
+    return curso.getCupoMaximo() - contarAlumnos(curso);
+  }
+
+  public boolean tieneCupoDisponible(Curso curso, int solicitantes) {
+    if (curso.getCupoMaximo() == null) {
+      return true;
+    }
+    return contarAlumnos(curso) + solicitantes <= curso.getCupoMaximo();
+  }
+
+  // Cuenta los alumnos distintos que estan matriculados en cursos actualmente activos de la academia.
+  public int contarAlumnosUnicosEnCursosActivos(Academia academia) {
+    return findCursosActivosByAcademia(academia.getId()).stream()
+      .flatMap(curso -> curso.getAlumnos() != null ? curso.getAlumnos().stream() : java.util.stream.Stream.empty())
+      .map(alumno -> alumno.getUsuario().getId())
+      .collect(Collectors.toSet())
+      .size();
+  }
+
+  // Calcula la media de alumnos por profesor entre los cursos activos de la academia.
+  public double calcularRatioAlumnosPorProfesorEnCursosActivos(Academia academia) {
+    List<Curso> activos = findCursosActivosByAcademia(academia.getId());
+    if (activos.isEmpty()) {
+      return 0.0;
+    }
+    return activos.stream()
+      .mapToDouble(curso -> {
+        int alumnos = curso.getAlumnos() != null ? curso.getAlumnos().size() : 0;
+        int profesores = curso.getProfesores() != null ? curso.getProfesores().size() : 0;
+        return profesores == 0 ? (double) alumnos : (double) alumnos / profesores;
+      })
+      .average()
+      .orElse(0.0);
+  }
+
+  // Calcula la duracion media en dias de los cursos activos de la academia.
+  public double calcularDuracionMediaCursosActivos(Academia academia) {
+    List<Curso> activos = findCursosActivosByAcademia(academia.getId());
+    return activos.stream()
+      .filter(curso -> curso.getFechaInicio() != null && curso.getFechaFin() != null)
+      .mapToLong(curso -> ChronoUnit.DAYS.between(curso.getFechaInicio(), curso.getFechaFin()))
+      .average()
+      .orElse(0.0);
+  }
+
+  public List<Curso> findCursosActivosByAcademia(String academiaId) {
+    LocalDate now = LocalDate.now();
+    return repository.findByAcademiaIdAndFechaInicioBeforeAndFechaFinAfter(academiaId, now, now);
+  }
+
+  public List<Curso> findByAcademia(String academiaId) {
+    return repository.findByAcademiaId(academiaId);
+  }
+
+  public List<Curso> findCursosSinProfesoresByAcademia(String academiaId) {
+    return repository.findByAcademiaIdAndProfesoresIsEmpty(academiaId);
+  }
+
+  public List<Curso> findByAcademiaOrderByNombre(String academiaId) {
+    return repository.findByAcademiaIdOrderByNombre(academiaId);
+  }
+
+  public List<Curso> findCursosByUsuarioAndAcademia(String usuarioId, String academiaId) {
+    List<Curso> cursos = new java.util.ArrayList<>();
+    cursos.addAll(repository.findByAcademiaIdAndAlumnosUsuarioId(academiaId, usuarioId));
+    cursos.addAll(repository.findByAcademiaIdAndProfesoresUsuarioId(academiaId, usuarioId));
+    return cursos.stream().distinct().toList();
+  }
+
+  public boolean esDirectorDeCurso(String cursoId, String usuarioId) {
+    Curso curso = findById(cursoId).orElseThrow(() -> new ObjetoNoEncontradoException("Curso no encontrado"));
+    return curso.getAcademia().getDirectores().stream()
+      .anyMatch(d -> d.getUsuario().getId().equals(usuarioId));
+  }
+
+  public Curso findByIdOrThrow(String cursoId) {
+    return findById(cursoId).orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+  }
+
+  public void addProfesoresToCurso(Curso curso, List<String> profesorIds, String academiaId) {
+    if (profesorIds != null) {
+      for (String pid : profesorIds) {
+        curso.getProfesores().add(
+          profesorRepository.findById(TipoUsuarioId.builder()
+            .academiaId(academiaId)
+            .usuarioId(pid)
+            .build()).orElseThrow(() -> new IllegalArgumentException("Profesor no encontrado"))
+        );
+      }
+    }
+  }
+
+  public void addAlumnosToCurso(Curso curso, List<String> alumnoIds, String academiaId) {
+    if (alumnoIds == null || alumnoIds.isEmpty()) {
+      return;
+    }
+    if (!tieneCupoDisponible(curso, alumnoIds.size())) {
+      throw new CupoAlcanzadoException("No hay plazas suficientes. Solo quedan " + plazasDisponibles(curso) + " plazas disponibles.");
+    }
+    List<Curso> cursosAcademia = repository.findByAcademiaId(academiaId);
+    for (String aid : alumnoIds) {
+      Alumno alumno = alumnoRepository.findById(TipoUsuarioId.builder()
+          .academiaId(academiaId)
+          .usuarioId(aid)
+          .build()).orElseThrow(() -> new IllegalArgumentException("Alumno no encontrado"));
+      for (Curso otroCurso : cursosAcademia) {
+        if (otroCurso.getId().equals(curso.getId())) {
+          continue;
+        }
+        if (otroCurso.getAlumnos() != null && otroCurso.getAlumnos().contains(alumno) && cursosSeSolapan(curso, otroCurso)) {
+          throw new AlumnoYaInscritoException("El alumno " + alumno.getUsuario().getNombre() + " " + alumno.getUsuario().getApellidos()
+              + " ya esta inscrito en el curso \"" + otroCurso.getNombre() + "\" de la misma academia y los horarios se solapan.");
+        }
+      }
+      curso.getAlumnos().add(alumno);
+    }
+  }
+
+  public void removeProfesorFromCurso(Curso curso, String profesorId) {
+    curso.getProfesores().removeIf(p -> p.getUsuario().getId().equals(profesorId));
+  }
+
+  public List<Profesor> findProfesoresDisponibles(Curso curso) {
+    return curso.getAcademia().getProfesores().stream()
+      .filter(profesor -> curso.getProfesores().stream().noneMatch(p -> p.getId().equals(profesor.getId())))
+      .toList();
+  }
+
+  public List<Alumno> findAlumnosDisponibles(Curso curso) {
+    List<Curso> cursosAcademia = repository.findByAcademiaId(curso.getAcademia().getId());
+    return curso.getAcademia().getAlumnos().stream()
+        .filter(alumno -> curso.getAlumnos().stream().noneMatch(a -> a.getId().equals(alumno.getId())))
+        .filter(alumno -> cursosAcademia.stream().noneMatch(otroCurso ->
+            !otroCurso.getId().equals(curso.getId())
+            && otroCurso.getAlumnos() != null
+            && otroCurso.getAlumnos().contains(alumno)
+            && cursosSeSolapan(curso, otroCurso)))
+        .toList();
+  }
+
+  private boolean cursosSeSolapan(Curso a, Curso b) {
+    LocalDate aInicio = a.getFechaInicio();
+    LocalDate aFin = a.getFechaFin();
+    LocalDate bInicio = b.getFechaInicio();
+    LocalDate bFin = b.getFechaFin();
+    if (aInicio == null || aFin == null || bInicio == null || bFin == null) {
+      return true;
+    }
+    return !aInicio.isAfter(bFin) && !bInicio.isAfter(aFin);
+  }
+
+  public Curso editarCurso(String cursoId, String nombre, String descripcion, LocalDate fechaInicio, LocalDate fechaFin, Integer cupoMaximo) {
+    Curso curso = findByIdOrThrow(cursoId);
+    if (cupoMaximo != null && cupoMaximo < contarAlumnos(curso)) {
+      throw new CupoNoPermitidoException("No puedes reducir el cupo por debajo del numero de alumnos matriculados (" + contarAlumnos(curso) + ").");
+    }
+    curso.setNombre(nombre);
+    curso.setDescripcion(descripcion);
+    curso.setFechaInicio(fechaInicio);
+    curso.setFechaFin(fechaFin);
+    curso.setCupoMaximo(cupoMaximo);
+    return save(curso);
+  }
 }

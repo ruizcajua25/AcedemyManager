@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Mis Ofertas - Panel</title>
+  <style>
+    .oferta-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .oferta-card:hover {
+      transform: translateY(-3px);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-white d-flex flex-column min-vh-100">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+
+  <main class="container py-5 flex-grow-1">
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+      <div>
+        <a class="text-brand-light text-decoration-none small" href="/panel">
+          <i class="bi bi-arrow-left"></i> Volver al panel
+        </a>
+        <h1 class="display-5 fw-bold mb-2 mt-2">Mis Ofertas</h1>
+        <p class="lead text-white-50 mb-0" th:if="${esDirector}">Todas las ofertas de tus academias</p>
+        <p class="lead text-white-50 mb-0" th:unless="${esDirector}">Ofertas de tus academias</p>
+      </div>
+    </header>
+
+    <div th:if="${#lists.size(ofertas) == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
+      <i class="bi bi-briefcase display-1 text-secondary mb-3"></i>
+      <h2 class="h3 fw-bold mb-3" th:if="${esDirector}">No tienes ofertas todavia</h2>
+      <h2 class="h3 fw-bold mb-3" th:unless="${esDirector}">No hay ofertas en tus academias</h2>
+      <p class="text-secondary mb-4" th:if="${esDirector}">Crea ofertas desde el detalle de cada academia.</p>
+      <p class="text-secondary mb-4" th:unless="${esDirector}">Las academias donde participas no tienen ofertas activas.</p>
+      <a th:if="${esDirector}" class="btn bg-brand text-white px-4" href="/panel/academias">Ver academias</a>
+      <a th:unless="${esDirector}" class="btn bg-brand text-white px-4" href="/ofertas/buscar">Buscar ofertas</a>
+    </div>
+
+    <section th:if="${#lists.size(ofertas) > 0}" class="row g-4">
+      <div class="col-12 col-md-6 col-xl-4" th:each="oferta : ${ofertas}">
+        <div class="oferta-card rounded-3 p-4 h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 fw-bold mb-0 text-truncate" th:text="${oferta.titulo}">Oferta</h2>
+            <span class="badge bg-brand text-capitalize text-white" th:text="${oferta.tipoOferta}">Tipo</span>
+          </div>
+
+          <p class="text-brand-light small mb-2" th:text="${oferta.academia.nombre}">Academia</p>
+
+          <p class="text-white-50 small mb-3" th:if="${oferta.curso}" th:text="${oferta.curso.nombre}">Curso</p>
+          <p class="text-white-50 small mb-3" th:unless="${oferta.curso}">Sin curso asignado</p>
+
+          <div class="d-flex justify-content-between border-top border-secondary border-opacity-25 pt-3 mb-3 small text-white-50">
+            <span>
+              <i class="bi bi-people me-1"></i>
+              <strong class="text-white" th:text="${#lists.size(oferta.candidatos)}">0</strong> candidatos
+            </span>
+            <span th:if="${oferta.activa}" class="text-success">
+              <i class="bi bi-check-circle me-1"></i>Activa
+            </span>
+            <span th:unless="${oferta.activa}" class="text-secondary">
+              <i class="bi bi-x-circle me-1"></i>Inactiva
+            </span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-light flex-grow-1" th:href="@{/ofertas/{id}(id=${oferta.id})}">
+              <i class="bi bi-eye me-1"></i>Ver
+            </a>
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/ofertas/{id}/candidatos(id=${oferta.id})}">
+              <i class="bi bi-people"></i>
+            </a>
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/ofertas/editar(id=${oferta.id})}">
+              <i class="bi bi-pencil"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
+</body>
+</html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/styles/colors.css">
   <title>Lista de academias</title>
   <style>
@@ -14,6 +15,10 @@
     .academia-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 1rem 2rem rgba(0, 0, 0, .18) !important;
+    }
+    .academia-card-top {
+      border: 2px solid var(--brand-color-light) !important;
+      background: linear-gradient(135deg, rgba(47, 160, 132, 0.08) 0%, rgba(255,255,255,1) 100%);
     }
   </style>
   <script defer>
@@ -36,16 +41,15 @@
     });
   </script>
 </head>
-<body class="bg-brand-dark text-white min-vh-100">
+<body class="bg-brand-dark text-white min-vh-100 d-flex flex-column">
   <div th:replace="~{fragments/navbar :: navbar-nofixed}"></div>
 
-  <main class="container py-5">
+  <main class="container py-5 flex-grow-1">
     <header class="d-flex flex-column flex-md-row justify-content-between gap-4 align-items-md-end mb-4">
       <div>
         <h1 class="display-5 fw-bold mb-2">Buscar academia</h1>
         <p class="lead text-white-50 mb-0">Encuentra academias y consulta sus cursos y ofertas.</p>
       </div>
-      <a class="btn bg-brand-light text-dark fw-semibold px-4" href="/academia/create">Crear academia</a>
     </header>
 
     <input class="form-control form-control-lg mb-4" type="text" placeholder="Buscar academia..." id="searchInput">
@@ -58,8 +62,20 @@
     <section th:if="${#lists.size(academias) > 0}" class="row g-4">
       <div class="academia col-12 col-md-6 col-xl-4" th:each="academia : ${academias}">
         <a class="text-decoration-none" th:href="@{/academias/{id}(id=${academia.id})}">
-          <article class="academia-card bg-white text-dark rounded shadow-sm p-4 h-100">
-            <h2 class="h4 fw-bold text-truncate mb-2" th:text="${academia.nombre}">Academia sin nombre</h2>
+          <article class="academia-card bg-white text-dark rounded shadow-sm p-4 h-100 position-relative" th:classappend="${topPosiciones.containsKey(academia.id)} ? 'academia-card-top'">
+            <span th:if="${topPosiciones.containsKey(academia.id)}" class="position-absolute top-0 end-0 mt-2 me-2 badge bg-brand text-white">
+              <i class="bi bi-trophy-fill me-1"></i>
+              <span th:text="'Top ' + ${topPosiciones.get(academia.id)}">Top 1</span>
+            </span>
+            <h2 class="h4 fw-bold text-truncate mb-1" th:text="${academia.nombre}">Academia sin nombre</h2>
+
+            <div th:if="${misAcademiasIds.contains(academia.id)}" class="mb-2">
+              <span class="badge bg-success text-white">
+                <i class="bi bi-check-circle-fill me-1"></i>Perteneces a esta academia
+              </span>
+            </div>
+
+            <div class="mb-3" th:replace="~{fragments/valoracion :: estrellas(${valoraciones.get(academia.id)})}"></div>
             <p class="text-secondary mb-3" th:if="${academia.descripcion}" th:text="${academia.descripcion}">Descripcion</p>
             <p class="text-secondary mb-3" th:unless="${academia.descripcion}" th:text="${academia.direccion}">Direccion</p>
 
@@ -82,5 +98,6 @@
       </div>
     </section>
   </main>
+  <div th:replace="~{fragments/footer :: pie}"></div>
 </body>
 </html>

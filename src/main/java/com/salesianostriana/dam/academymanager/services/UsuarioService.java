@@ -27,7 +27,9 @@ public class UsuarioService extends BaseService<Usuario, String, UsuarioReposito
   @Override
   public Usuario save(Usuario usuario) {
     usuarioRepository.findByUsername(usuario.getUsername()).ifPresent(u -> {
-      throw new UsernameRepetidoException(usuario.getUsername());
+      if (!u.getId().equals(usuario.getId())) {
+        throw new UsernameRepetidoException(usuario.getUsername());
+      }
     });
     return usuarioRepository.save(usuario);
   }

@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.academymanager.services;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
   private AlumnoRepository alumnoRepository;
   @Autowired
   private ProfesorRepository profesorRepository;
+  @Autowired
+  private CursoService cursoService;
   
   public List<Oferta> findByAcademia (Academia academia) {
     return ofertaRepository.findByAcademia(academia); 
@@ -42,7 +46,7 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
   }
 
   public List<Oferta> findByUsuarioId(String id) {
-    return ofertaRepository.findByCandidatosId(id);
+    return ofertaRepository.findByCandidatosIdAndActivaTrue(id);
   }
 
   public void aceptarCandidato(Oferta oferta, String candidatoId) {
@@ -97,5 +101,117 @@ public class OfertaService extends BaseService<Oferta, String, OfertaRepository>
     }
 
     return oferta.isActiva() && oferta.getCurso().getFechaInicio().isAfter(LocalDate.now());
+  }
+
+  public int totalCandidatosEnOferta(Oferta oferta) {
+    return oferta.getCandidatos() != null ? oferta.getCandidatos().size() : 0;
+  }
+
+  public Map<String, Integer> resumenCandidatosEnOferta(Oferta oferta) {
+    Map<String, Integer> resumen = new HashMap<>();
+    int candidatos = oferta.getCandidatos() != null ? oferta.getCandidatos().size() : 0;
+    resumen.put("candidatos", candidatos);
+    resumen.put("total", candidatos);
+    return resumen;
+  }
+
+  public List<Oferta> findOfertasActivasByAcademia(String academiaId) {
+    LocalDate now = LocalDate.now();
+    List<Oferta> ofertasConCurso = ofertaRepository.findByAcademiaIdAndActivaTrueAndCurso_FechaInicioAfter(academiaId, now);
+    List<Oferta> ofertasSinCurso = ofertaRepository.findByAcademiaIdAndActivaTrueAndCursoIsNull(academiaId);
+    List<Oferta> combined = new java.util.ArrayList<>(ofertasConCurso);
+    combined.addAll(ofertasSinCurso);
+    return combined;
+  }
+
+  public List<Oferta> findAllActivas() {
+    return findAll().stream()
+      .filter(this::esOfertaAplicable)
+      .toList();
+  }
+
+  public boolean esDirectorDeOferta(String ofertaId, String usuarioId) {
+    return ofertaRepository.existsByIdAndAcademia_Directores_UsuarioId(ofertaId, usuarioId);
+  }
+
+  public Oferta findByIdOrThrow(String ofertaId) {
+    return findById(ofertaId).orElseThrow(() -> new ObjetoNoEncontradoException("Oferta no encontrada"));
+  }
+
+  public void aplicarOferta(String ofertaId, String usuarioId) {
+    Oferta oferta = findByIdOrThrow(ofertaId);
+    if (!esOfertaAplicable(oferta)) {
+      throw new com.salesianostriana.dam.academymanager.exceptions.AccionNoPermitidaException("No puedes aplicar a esta oferta");
+    }
+    aplicar(oferta, Usuario.builder().id(usuarioId).build());
+    save(oferta);
+  }
+
+  public void aceptarCandidato(String ofertaId, String candidatoId) {
+    Oferta oferta = findByIdOrThrow(ofertaId);
+    aceptarCandidato(oferta, candidatoId);
+    save(oferta);
+  }
+
+  public void rechazarCandidato(String ofertaId, String candidatoId) {
+    Oferta oferta = findByIdOrThrow(ofertaId);
+    rechazarCandidato(oferta, candidatoId);
+    save(oferta);
+  }
+
+  public List<Oferta> findOfertasConCandidatosByAcademia(String academiaId) {
+    return findOfertasActivasByAcademia(academiaId).stream()
+      .filter(o -> o.getCandidatos() != null && !o.getCandidatos().isEmpty())
+      .toList();
+  }
+
+  public List<Oferta> findOfertasSinCandidatosByAcademia(String academiaId) {
+    return findOfertasActivasByAcademia(academiaId).stream()
+      .filter(o -> o.getCandidatos() == null || o.getCandidatos().isEmpty())
+      .toList();
+  }
+
+  public int totalCandidatosByAcademia(String academiaId) {
+    return findOfertasActivasByAcademia(academiaId).stream()
+      .mapToInt(o -> o.getCandidatos() != null ? o.getCandidatos().size() : 0)
+      .sum();
+  }
+
+  // Calcula la proporcion de ofertas activas de la academia que tienen al menos un candidato (0.0 a 1.0).
+  public double calcularTasaDeRespuestaOfertas(Academia academia) {
+    List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
+    if (activas.isEmpty()) {
+      return 0.0;
+    }
+    long conCandidatos = activas.stream()
+      .filter(o -> o.getCandidatos() != null && !o.getCandidatos().isEmpty())
+      .count();
+    return (double) conCandidatos / activas.size();
+  }
+
+  // Calcula el numero medio de candidatos por oferta activa de la academia.
+  public double calcularInteresMedioPorOferta(Academia academia) {
+    List<Oferta> activas = findOfertasActivasByAcademia(academia.getId());
+    if (activas.isEmpty()) {
+      return 0.0;
+    }
+    return activas.stream()
+      .mapToInt(o -> o.getCandidatos() != null ? o.getCandidatos().size() : 0)
+      .average()
+      .orElse(0.0);
+  }
+
+  public Oferta editarOferta(String ofertaId, String titulo, String descripcion, TipoOferta tipoOferta, String cursoId) {
+    Oferta oferta = findByIdOrThrow(ofertaId);
+    oferta.setTitulo(titulo);
+    oferta.setDescripcion(descripcion);
+    oferta.setTipoOferta(tipoOferta);
+    if (cursoId != null && !cursoId.isEmpty()) {
+      Curso curso = cursoService.findByIdOrThrow(cursoId);
+      oferta.setCurso(curso);
+    } else {
+      oferta.setCurso(null);
+    }
+    return save(oferta);
   }
 }

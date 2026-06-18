@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/styles/colors.css">
+  <title>Mis Cursos - Panel</title>
+  <style>
+    .course-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .course-card:hover {
+      transform: translateY(-3px);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-white d-flex flex-column min-vh-100">
+  <nav th:replace="~{fragments/navbar :: navbar-nofixed}"></nav>
+
+  <main class="container py-5 flex-grow-1">
+    <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+      <div>
+        <a class="text-brand-light text-decoration-none small" href="/panel">
+          <i class="bi bi-arrow-left"></i> Volver al panel
+        </a>
+        <h1 class="display-5 fw-bold mb-2 mt-2">Mis Cursos</h1>
+        <p class="lead text-white-50 mb-0" th:if="${esDirector}">Todos los cursos de tus academias</p>
+        <p class="lead text-white-50 mb-0" th:unless="${esDirector}">Tus cursos</p>
+      </div>
+    </header>
+
+    <div th:if="${#lists.size(cursos) == 0}" class="bg-white text-dark rounded shadow p-5 text-center">
+      <i class="bi bi-book display-1 text-secondary mb-3"></i>
+      <h2 class="h3 fw-bold mb-3" th:if="${esDirector}">No tienes cursos todavia</h2>
+      <h2 class="h3 fw-bold mb-3" th:unless="${esDirector}">No estas inscrito en ningun curso</h2>
+      <p class="text-secondary mb-4" th:if="${esDirector}">Crea cursos desde el detalle de cada academia.</p>
+      <p class="text-secondary mb-4" th:unless="${esDirector}">Busca academias y unete a un curso.</p>
+      <a th:if="${esDirector}" class="btn bg-brand text-white px-4" href="/panel/academias">Ver academias</a>
+      <a th:unless="${esDirector}" class="btn bg-brand text-white px-4" href="/academias/find">Buscar academias</a>
+    </div>
+
+    <section th:if="${#lists.size(cursos) > 0}" class="row g-4">
+      <div class="col-12 col-md-6 col-xl-4" th:each="curso : ${cursos}">
+        <div class="course-card rounded-3 p-4 h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 fw-bold mb-0 text-truncate" th:text="${curso.nombre}">Curso</h2>
+            <span th:if="${cursosActivos.get(curso.id)}" class="badge bg-success">
+              <i class="bi bi-check-circle-fill me-1"></i>Activo
+            </span>
+            <span th:unless="${cursosActivos.get(curso.id)}" class="badge bg-secondary">
+              <i class="bi bi-pause-circle-fill me-1"></i>Inactivo
+            </span>
+          </div>
+
+          <p class="text-brand-light small mb-2" th:text="${curso.academia.nombre}">Academia</p>
+
+          <div th:if="${curso.fechaInicio != null and curso.fechaFin != null}" class="mb-3">
+            <span class="badge bg-brand-light text-dark small">
+              <i class="bi bi-calendar3 me-1"></i>
+              <span th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></span>
+              -
+              <span th:text="${#temporals.format(curso.fechaFin, 'dd/MM/yyyy')}"></span>
+            </span>
+          </div>
+
+          <ul class="list-unstyled d-flex justify-content-between border-top border-secondary border-opacity-25 pt-3 mb-3 small text-white-50">
+            <li class="text-center">
+              <strong class="d-block fs-5 text-white" th:text="${#sets.size(curso.alumnos)}">0</strong>
+              alumnos
+            </li>
+            <li class="text-center">
+              <strong class="d-block fs-5 text-white" th:text="${#sets.size(curso.profesores)}">0</strong>
+              profesores
+            </li>
+          </ul>
+
+          <div th:if="${curso.cupoMaximo != null}" class="mb-3">
+            <span class="badge" th:classappend="${#sets.size(curso.alumnos) >= curso.cupoMaximo} ? 'bg-danger' : 'bg-info text-dark'">
+              <i class="bi bi-people-fill me-1"></i>
+              <span th:text="${#sets.size(curso.alumnos)}">0</span>
+              /
+              <span th:text="${curso.cupoMaximo}">0</span>
+              alumnos
+            </span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-light flex-grow-1" th:href="@{/academias/{academiaId}/cursos/{id}(academiaId=${curso.academia.id}, id=${curso.id})}">
+              <i class="bi bi-eye me-1"></i>Ver
+            </a>
+            <a class="btn btn-sm btn-outline-light px-2 py-1 small" th:href="@{/academias/{academiaId}/cursos/{id}/personas(academiaId=${curso.academia.id}, id=${curso.id})}" title="Ver personas">
+              <i class="bi bi-people"></i>
+            </a>
+            <a th:if="${esDirector}" class="btn btn-sm btn-outline-light" th:href="@{/academias/{academiaId}/cursos/{id}/editar(academiaId=${curso.academia.id}, id=${curso.id})}">
+              <i class="bi bi-pencil"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div th:replace="~{fragments/footer :: pie}"></div>
+</body>
+</html>
