@@ -26,15 +26,15 @@
           <div class="row g-3">
             <div class="col-12 col-md-6">
               <label class="form-label text-white-50 small">Nombre</label>
-              <input type="text" class="form-control bg-transparent text-white" th:field="*{nombre}" required>
+              <input type="text" class="form-control bg-transparent text-white" th:field="*{nombre}" required minlength="2" maxlength="100">
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label text-white-50 small">Apellidos</label>
-              <input type="text" class="form-control bg-transparent text-white" th:field="*{apellidos}" required>
+              <input type="text" class="form-control bg-transparent text-white" th:field="*{apellidos}" required minlength="2" maxlength="150">
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label text-white-50 small">DNI</label>
-              <input type="text" class="form-control bg-transparent text-white" th:field="*{dni}" required>
+              <input type="text" class="form-control bg-transparent text-white" th:field="*{dni}" pattern="^[0-9]{8}[A-Za-z]$" placeholder="12345678A">
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label text-white-50 small">Email</label>

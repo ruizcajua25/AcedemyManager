@@ -32,38 +32,38 @@
               <div class="row g-3">
                 <div class="col-12 col-sm-6">
                   <label class="form-label small fw-semibold" for="nombre">*Nombre</label>
-                  <input class="form-control" type="text" id="nombre" name="nombre" placeholder="Juan" required>
+                  <input class="form-control" type="text" id="nombre" th:field="*{nombre}" placeholder="Juan" required minlength="2" maxlength="100">
                 </div>
                 
                 <div class="col-12 col-sm-6">
-                  <label class="form-label small fw-semibold" for="apellido">Apellido</label>
-                  <input class="form-control" type="text" id="apellido" name="apellido" placeholder="Perez">
+                  <label class="form-label small fw-semibold" for="apellidos">*Apellidos</label>
+                  <input class="form-control" type="text" id="apellidos" th:field="*{apellidos}" placeholder="Perez" required minlength="2" maxlength="150">
                 </div>
               </div>
               
               <div>
                 <label class="form-label small fw-semibold" for="dni">DNI</label>
-                <input class="form-control" type="text" id="dni" name="dni" placeholder="12345678A">
+                <input class="form-control" type="text" id="dni" th:field="*{dni}" placeholder="12345678A" pattern="^[0-9]{8}[A-Za-z]$">
               </div>
               
               <div>
                 <label class="form-label small fw-semibold" for="email">*Email</label>
-                <input class="form-control" type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+                <input class="form-control" type="email" id="email" th:field="*{email}" placeholder="ejemplo@correo.com" required>
               </div>
               
               <div>
                 <label class="form-label small fw-semibold" for="username">*Nombre de Usuario</label>
-                <input class="form-control" type="text" id="username" name="username" placeholder="Elige un nombre de usuario" required>
+                <input class="form-control" type="text" id="username" th:field="*{username}" placeholder="Elige un nombre de usuario" required minlength="3" maxlength="50">
               </div>
               
               <div class="row g-3">
                 <div class="col-12 col-sm-6">
                   <label class="form-label small fw-semibold" for="password">*Contrasena</label>
-                  <input class="form-control" type="password" id="password" name="password" placeholder="Contrasena segura" required>
+                  <input class="form-control" type="password" id="password" th:field="*{password}" placeholder="Contrasena segura" required minlength="6">
                 </div>
                 <div class="col-12 col-sm-6">
                   <label class="form-label small fw-semibold" for="confirmPassword">*Confirmar</label>
-                  <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirma contrasena" required>
+                  <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirma contrasena" required minlength="6">
                 </div>
               </div>
               

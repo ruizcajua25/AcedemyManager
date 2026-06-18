@@ -51,8 +51,9 @@
               <div>
                 <label class="form-label small fw-semibold" for="descripcion">Descripcion</label>
                 <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" 
-                          rows="3" maxlength="500" 
+                          rows="3" minlength="10" maxlength="500" 
                           placeholder="Describe los requisitos y detalles de la oferta..."></textarea>
+                <div class="invalid-feedback">Si añades descripcion, debe tener al menos 10 caracteres.</div>
               </div>
 
               <div class="row g-3">

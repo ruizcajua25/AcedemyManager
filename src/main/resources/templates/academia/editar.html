@@ -49,26 +49,33 @@
               <div>
                 <label class="form-label small fw-semibold" for="descripcion">Descripcion</label>
                 <textarea class="form-control" id="descripcion" name="descripcion" th:field="*{descripcion}" 
-                          rows="3" maxlength="500" 
+                          rows="3" minlength="10" maxlength="500" 
                           placeholder="Descripcion de la academia..."></textarea>
+                <div class="invalid-feedback">Si añades descripcion, debe tener al menos 10 caracteres.</div>
               </div>
 
               <div>
-                <label class="form-label small fw-semibold" for="direccion">Direccion</label>
+                <label class="form-label small fw-semibold" for="direccion">*Direccion</label>
                 <input class="form-control" type="text" id="direccion" name="direccion" th:field="*{direccion}" 
+                       required minlength="5" maxlength="150"
                        placeholder="Direccion completa">
+                <div class="invalid-feedback">Introduce una direccion valida (minimo 5 caracteres).</div>
               </div>
 
               <div class="row g-3">
                 <div class="col-12 col-sm-6">
-                  <label class="form-label small fw-semibold" for="telefono">Telefono</label>
+                  <label class="form-label small fw-semibold" for="telefono">*Telefono</label>
                   <input class="form-control" type="tel" id="telefono" name="telefono" th:field="*{telefono}" 
+                         required pattern="^[0-9]{9}$" 
                          placeholder="600123456">
+                  <div class="invalid-feedback">Telefono invalido (9 digitos).</div>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <label class="form-label small fw-semibold" for="email">Email</label>
+                  <label class="form-label small fw-semibold" for="email">*Email</label>
                   <input class="form-control" type="email" id="email" name="email" th:field="*{email}" 
+                         required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                          placeholder="ejemplo@academia.com">
+                  <div class="invalid-feedback">Introduce un email valido.</div>
                 </div>
               </div>
 
